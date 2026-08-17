@@ -3,12 +3,13 @@
 Code for **"Overlap Metrics Do Not Predict Measurement Reliability: Qualifying and
 Monitoring Segmentation for SEM Metrology."**
 
-Lithography metrology increasingly reads critical dimension (CD) and edge roughness
-off a learned segmentation mask rather than a threshold-based contour. That puts a
-trained model inside a measurement instrument and raises a question the deterministic
-route never posed: how do you establish that a segmentation model *measures*
-correctly? The field answers with mask overlap on an in-distribution split. This
-repository contains the experiments showing that answer does not hold, and the two
+Lithography metrology reads critical dimension (CD) and edge roughness off contours
+that threshold operators extract from SEM images. At advanced nodes those operators
+stop producing usable contours, and learned segmentation is the candidate replacement.
+Adopting it puts a trained model inside a measurement instrument and raises a question
+the deterministic route never posed: how do you establish that a segmentation model
+*measures* correctly? The field answers with mask overlap on an in-distribution split.
+This repository contains the experiments showing that answer does not hold, and the two
 mechanisms proposed in its place.
 
 ## Verify the paper's numbers without running anything
