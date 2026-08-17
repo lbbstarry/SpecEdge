@@ -1,0 +1,145 @@
+{
+  "n_masks": 586,
+  "n_skipped_complex": 2,
+  "c_values": [
+    1.0,
+    2.0,
+    3.0
+  ],
+  "seed": 42,
+  "note": "All three arms carry mean |delta| = c by construction, so Eq. (1) predicts equal IoU. CD reads a signed mean and LER a standard deviation, so those separate the arms.",
+  "by_c": {
+    "1.0": {
+      "arms": {
+        "constant": {
+          "iou_mean": 0.9763583720192942,
+          "iou_sd": 0.00328590058640343,
+          "cd_err_mean": 1.8811060525022283,
+          "ler_ref_mean": 7.34364303156101,
+          "ler_pert_mean": 7.33456412556441,
+          "lwr_pert_mean": 11.710903042091916,
+          "ler_injected_3sigma": 0.0,
+          "ler_pert_predicted_quadrature": 7.34364303156101
+        },
+        "gaussian": {
+          "iou_mean": 0.9759857641159866,
+          "iou_sd": 0.003310693920004451,
+          "cd_err_mean": 0.07373418839281014,
+          "ler_ref_mean": 7.34364303156101,
+          "ler_pert_mean": 8.64679524572677,
+          "lwr_pert_mean": 13.479486766519333,
+          "ler_injected_3sigma": 3.7599424119465006,
+          "ler_pert_predicted_quadrature": 8.25022787055901
+        },
+        "rademacher": {
+          "iou_mean": 0.9753109401277111,
+          "iou_sd": 0.003377037386405991,
+          "cd_err_mean": 0.07208201724836516,
+          "ler_ref_mean": 7.34364303156101,
+          "ler_pert_mean": 8.176137918311127,
+          "lwr_pert_mean": 12.839090128574005,
+          "ler_injected_3sigma": 3.0,
+          "ler_pert_predicted_quadrature": 7.932785952929436
+        }
+      },
+      "iou_spread_across_arms": 0.0010474318915830727,
+      "cd_spread_across_arms": 1.8090240352538631,
+      "ler_spread_across_arms": 1.3122311201623598,
+      "predicted": {
+        "constant_cd": 2.0,
+        "rademacher_ler_3sigma": 3.0,
+        "gaussian_ler_3sigma": 3.7599424119465006
+      }
+    },
+    "2.0": {
+      "arms": {
+        "constant": {
+          "iou_mean": 0.9538789685844679,
+          "iou_sd": 0.006317736273367814,
+          "cd_err_mean": 3.7598013184191283,
+          "ler_ref_mean": 7.34364303156101,
+          "ler_pert_mean": 7.325695626957479,
+          "lwr_pert_mean": 11.704516123870576,
+          "ler_injected_3sigma": 0.0,
+          "ler_pert_predicted_quadrature": 7.34364303156101
+        },
+        "gaussian": {
+          "iou_mean": 0.9515558560403473,
+          "iou_sd": 0.0066523402953289155,
+          "cd_err_mean": 0.14606707618444467,
+          "ler_ref_mean": 7.34364303156101,
+          "ler_pert_mean": 11.143701862986779,
+          "lwr_pert_mean": 16.959899727600156,
+          "ler_injected_3sigma": 7.519884823893001,
+          "ler_pert_predicted_quadrature": 10.510840153841693
+        },
+        "rademacher": {
+          "iou_mean": 0.9512510058226442,
+          "iou_sd": 0.006618340574427336,
+          "cd_err_mean": 0.14231095257962192,
+          "ler_ref_mean": 7.34364303156101,
+          "ler_pert_mean": 9.980290274373292,
+          "lwr_pert_mean": 15.35833920669982,
+          "ler_injected_3sigma": 6.0,
+          "ler_pert_predicted_quadrature": 9.48309511578338
+        }
+      },
+      "iou_spread_across_arms": 0.0026279627618236434,
+      "cd_spread_across_arms": 3.6174903658395063,
+      "ler_spread_across_arms": 3.8180062360292997,
+      "predicted": {
+        "constant_cd": 4.0,
+        "rademacher_ler_3sigma": 6.0,
+        "gaussian_ler_3sigma": 7.519884823893001
+      }
+    },
+    "3.0": {
+      "arms": {
+        "constant": {
+          "iou_mean": 0.9324728123111129,
+          "iou_sd": 0.009119086238060856,
+          "cd_err_mean": 5.6356685507990365,
+          "ler_ref_mean": 7.34364303156101,
+          "ler_pert_mean": 7.317103203186979,
+          "lwr_pert_mean": 11.698930460881416,
+          "ler_injected_3sigma": 0.0,
+          "ler_pert_predicted_quadrature": 7.34364303156101
+        },
+        "gaussian": {
+          "iou_mean": 0.9281308620718506,
+          "iou_sd": 0.009757092751702215,
+          "cd_err_mean": 0.21439917755835242,
+          "ler_ref_mean": 7.34364303156101,
+          "ler_pert_mean": 14.068647145449894,
+          "lwr_pert_mean": 21.03977615177248,
+          "ler_injected_3sigma": 11.279827235839502,
+          "ler_pert_predicted_quadrature": 13.459702650704479
+        },
+        "rademacher": {
+          "iou_mean": 0.927799072787916,
+          "iou_sd": 0.009741698483513918,
+          "cd_err_mean": 0.20922349785068453,
+          "ler_ref_mean": 7.34364303156101,
+          "ler_pert_mean": 12.196209737739657,
+          "lwr_pert_mean": 18.46008898696233,
+          "ler_injected_3sigma": 9.0,
+          "ler_pert_predicted_quadrature": 11.615898285324066
+        }
+      },
+      "iou_spread_across_arms": 0.00467373952319694,
+      "cd_spread_across_arms": 5.426445052948352,
+      "ler_spread_across_arms": 6.7515439422629155,
+      "predicted": {
+        "constant_cd": 6.0,
+        "rademacher_ler_3sigma": 9.0,
+        "gaussian_ler_3sigma": 11.279827235839502
+      }
+    }
+  },
+  "attenuation": {
+    "model": "1 - IoU ~ (L/A) * c, no intercept",
+    "slope": 0.8792466282340967,
+    "pearson_r": 0.9889968302411541,
+    "n": 1758
+  }
+}

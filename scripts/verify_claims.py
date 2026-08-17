@@ -140,6 +140,38 @@ CLAIMS: list[tuple[str, str, str, str, str]] = [
     ("4", "VIII-H", "e5b_train_support.json", "extreme_below_train_min",
      "Extreme samples below it"),
 
+    # --- Section VII-D, controlled test of the mechanism (E23) ----------
+    ("586", "VII-D", "e23_mechanism/summary.json", "n_masks",
+     "orientable reference masks perturbed"),
+    ("0.0010", "VII-D", "e23_mechanism/summary.json",
+     "by_c.1.0.iou_spread_across_arms",
+     "IoU range across the three matched fields at c=1"),
+    ("0.0047", "VII-D", "e23_mechanism/summary.json",
+     "by_c.3.0.iou_spread_across_arms", "same at c=3"),
+    ("1.881", "VII-D", "e23_mechanism/summary.json",
+     "by_c.1.0.arms.constant.cd_err_mean",
+     "constant offset moves CD by 0.94*2c at c=1"),
+    ("0.072", "VII-D", "e23_mechanism/summary.json",
+     "by_c.1.0.arms.rademacher.cd_err_mean",
+     "two-point field leaves CD essentially exact"),
+    ("5.636", "VII-D", "e23_mechanism/summary.json",
+     "by_c.3.0.arms.constant.cd_err_mean", "constant offset at c=3"),
+    ("0.209", "VII-D", "e23_mechanism/summary.json",
+     "by_c.3.0.arms.rademacher.cd_err_mean", "two-point field at c=3"),
+    ("7.34", "VII-D", "e23_mechanism/summary.json",
+     "by_c.1.0.arms.constant.ler_ref_mean", "reference LER 3-sigma level"),
+    ("12.20", "VII-D", "e23_mechanism/summary.json",
+     "by_c.3.0.arms.rademacher.ler_pert_mean", "two-point LER at c=3"),
+    ("14.07", "VII-D", "e23_mechanism/summary.json",
+     "by_c.3.0.arms.gaussian.ler_pert_mean",
+     "Gaussian LER at c=3: same L1 norm, different shape"),
+    ("0.879", "VII-D", "e23_mechanism/summary.json", "attenuation.slope",
+     "slope of 1-IoU on (L/A)*mean|delta|, predicted 1.0"),
+    ("0.989", "VII-D", "e23_mechanism/summary.json", "attenuation.pearson_r",
+     "its correlation"),
+    ("1758", "VII-D", "e23_mechanism/summary.json", "attenuation.n",
+     "cases in that regression"),
+
     # --- Section VII-B, decoupling under cross-validation ---------------
     ("2352", "VII-B", "e21_decoupling_cv/summary.json", "n_records",
      "frontend-image records under cross-validation"),
@@ -166,13 +198,31 @@ CLAIMS: list[tuple[str, str, str, str, str]] = [
 
 
 def resolve(doc, dotted: str):
-    """Walk a dotted path, accepting integer keys as list indices."""
+    """Walk a dotted path, accepting integer keys as list indices.
+
+    Some artifacts key by a float rendered as a string, so "by_c.1.0.slope"
+    has to reach the literal key "1.0". When a segment does not resolve, it is
+    rejoined with the next one before giving up.
+    """
     node = doc
-    for key in dotted.split("."):
+    parts = dotted.split(".")
+    i = 0
+    while i < len(parts):
+        key = parts[i]
         if isinstance(node, list):
             node = node[int(key)]
-        else:
+            i += 1
+            continue
+        if key in node:
             node = node[key]
+            i += 1
+            continue
+        merged = f"{key}.{parts[i + 1]}" if i + 1 < len(parts) else None
+        if merged is not None and merged in node:
+            node = node[merged]
+            i += 2
+            continue
+        raise KeyError(key)
     return node
 
 

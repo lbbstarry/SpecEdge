@@ -20,15 +20,16 @@ manuscript can be checked against the artifact that produced it:
 python scripts/verify_claims.py
 ```
 
-It holds 59 values as the paper prints them, each paired with an artifact field,
+It holds 72 values as the paper prints them, each paired with an artifact field,
 rounds the artifact value to the printed precision, and exits nonzero on any
-disagreement. Expected output: `59/59 claims verified`.
+disagreement. Expected output: `72/72 claims verified`.
 
 ## What the code establishes
 
 | Claim | Where |
 |---|---|
 | Overlap reads one functional of the boundary displacement field, so the conditional spread of a boundary-derived measurand is unbounded at fixed overlap: 23x within one narrow IoU bin, 38x over 588 cross-validated images, frontend identity explaining 0.1% | `revision_v4_analysis.py` (E7), `e21_decoupling_cv.py` |
+| That derivation tested under control: 586 masks perturbed by displacement fields of equal L1 norm and different shape hold IoU within 0.005 while CD error moves 26x, and the attenuation tracks L/A at r = 0.989 | `e23_mechanism_synthetic.py` |
 | Cross-validated retraining separates the four frontends by less than each varies across folds, and the leader changes with the fold | `e18_make_cv_folds.py`, `e18_run_cv.sh` |
 | Out-of-window collapse reproduces but is not confined to one architecture | same, evaluated on the Extreme split |
 | Against layout intent, the frontend with the higher Extreme overlap issues 11 wrong design calls where the lower issues 6 | `e13_layout_dfm_verdict.py`, `e12_dfm_verdict_fidelity.py` |
@@ -111,6 +112,7 @@ python scripts/e16_statistical_corrections.py --n-boot 2000
 python scripts/e19_risk_model.py
 python scripts/e21_decoupling_cv.py
 python scripts/e22_policy_baselines.py
+python scripts/e23_mechanism_synthetic.py    # needs reference masks
 
 # 6. GPU-dependent probes
 python scripts/e5a_inference_probe.py
