@@ -1,0 +1,30 @@
+{
+  "best5_resize512": {
+    "n_valid": 5,
+    "fg_excess_mean": -0.0011621475219726,
+    "spurious_components_mean": 1.2,
+    "cd_mae_mean": 0.08876513442852452,
+    "cd_mae_median": 0.0863549856759533
+  },
+  "best5_tile512": {
+    "n_valid": 5,
+    "fg_excess_mean": -0.02764797210693356,
+    "spurious_components_mean": 2.0,
+    "cd_mae_mean": 5.264247607359889,
+    "cd_mae_median": 4.875862170179346
+  },
+  "worst10_resize512": {
+    "n_valid": 10,
+    "fg_excess_mean": 0.11491441726684568,
+    "spurious_components_mean": 3.0,
+    "cd_mae_mean": 34.471258657230074,
+    "cd_mae_median": 13.294261079868903
+  },
+  "worst10_tile512": {
+    "n_valid": 10,
+    "fg_excess_mean": 0.17856206893920898,
+    "spurious_components_mean": 4.6,
+    "cd_mae_mean": 68.07389386162916,
+    "cd_mae_median": 15.806566336233786
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "train_n": 470,
+  "train_fg_min": 0.1665811538696289,
+  "train_fg_p1": 0.22849647521972657,
+  "train_fg_p5": 0.27436046600341796,
+  "extreme_below_train_min": 4,
+  "standard_below_train_min": 0
+}

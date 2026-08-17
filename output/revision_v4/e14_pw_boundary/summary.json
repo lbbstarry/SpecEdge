@@ -1,0 +1,62 @@
+{
+  "spec_percentile": 95.0,
+  "spec_limits": {
+    "lwr_3sigma": 16.43192855,
+    "ler_mean_3sigma": 9.21771194
+  },
+  "axis": "foreground_ratio",
+  "axis_is_proxy": "foreground ratio stands in for process-window position; this dataset carries no dose or focus metadata",
+  "n": 65,
+  "n_fail_reference": 11,
+  "boundary_reference": 0.11977502223572703,
+  "frontends": {
+    "unet": {
+      "n_fail": 11,
+      "boundary": 0.1765822106802813,
+      "boundary_shift": 0.05680718844455426,
+      "shift_ci_lo": -0.009840780699533973,
+      "shift_ci_hi": 0.11843723985067138,
+      "bootstrap_draws": 1015,
+      "over_reject": 1,
+      "escape": 1,
+      "misclassified": 2,
+      "direction": "narrower than truth (over-shrink, yield loss)"
+    },
+    "deeplabv3plus": {
+      "n_fail": 10,
+      "boundary": 0.13022067262981935,
+      "boundary_shift": 0.010445650394092315,
+      "shift_ci_lo": -0.01213856192671818,
+      "shift_ci_hi": 0.0239749525750284,
+      "bootstrap_draws": 1110,
+      "over_reject": 0,
+      "escape": 1,
+      "misclassified": 1,
+      "direction": "narrower than truth (over-shrink, yield loss)"
+    },
+    "hrnet": {
+      "n_fail": 10,
+      "boundary": 0.13022067262981935,
+      "boundary_shift": 0.010445650394092315,
+      "shift_ci_lo": -0.00891121338327927,
+      "shift_ci_hi": 0.021607271023154878,
+      "bootstrap_draws": 1041,
+      "over_reject": 0,
+      "escape": 1,
+      "misclassified": 1,
+      "direction": "narrower than truth (over-shrink, yield loss)"
+    },
+    "segformer": {
+      "n_fail": 15,
+      "boundary": 0.361336636638229,
+      "boundary_shift": 0.24156161440250198,
+      "shift_ci_lo": 0.003704230392357321,
+      "shift_ci_hi": 0.27376845547237394,
+      "bootstrap_draws": 1118,
+      "over_reject": 5,
+      "escape": 1,
+      "misclassified": 6,
+      "direction": "narrower than truth (over-shrink, yield loss)"
+    }
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "protocol": "verdicts assigned under blinded protocol (annotator 1: AI), independently reviewed against raw images and confirmed by human annotator (annotator 2); unblinded 2026-07-03",
+  "groups": {
+    "control_3": {
+      "n_components": 40,
+      "total_area_px": 5894,
+      "verdicts": {
+        "ambiguous": {
+          "n": 40,
+          "count_frac": 1.0,
+          "area_px": 5894,
+          "area_frac": 1.0
+        }
+      }
+    },
+    "failure_5": {
+      "n_components": 12,
+      "total_area_px": 1192416,
+      "verdicts": {
+        "ambiguous": {
+          "n": 1,
+          "count_frac": 0.0833,
+          "area_px": 80,
+          "area_frac": 0.0001
+        },
+        "hallucination": {
+          "n": 10,
+          "count_frac": 0.8333,
+          "area_px": 1170048,
+          "area_frac": 0.9812
+        },
+        "missed_by_reference": {
+          "n": 1,
+          "count_frac": 0.0833,
+          "area_px": 22288,
+          "area_frac": 0.0187
+        }
+      }
+    }
+  }
+}

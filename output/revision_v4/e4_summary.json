@@ -1,0 +1,26 @@
+{
+  "extreme_segformer": {
+    "n": 62,
+    "n_fail": 8,
+    "spearman_d_vs_err": 0.4190411838420628,
+    "auroc_disagreement": 0.9097222222222222,
+    "auroc_fg_dev": 0.9606481481481481,
+    "auroc_cc_dev": 0.8414351851851852
+  },
+  "extreme_all_models": {
+    "n": 248,
+    "n_fail": 13,
+    "spearman_d_vs_err": 0.23570726251494598,
+    "auroc_disagreement": 0.7292962356792144,
+    "auroc_fg_dev": 0.776759410801964,
+    "auroc_cc_dev": 0.7649754500818331
+  },
+  "pooled_all": {
+    "n": 488,
+    "n_fail": 21,
+    "spearman_d_vs_err": 0.4606408439911094,
+    "auroc_disagreement": 0.7739369837870909,
+    "auroc_fg_dev": 0.7637401855817273,
+    "auroc_cc_dev": 0.7577750586315897
+  }
+}

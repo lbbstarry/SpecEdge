@@ -1,0 +1,69 @@
+{
+  "n_samples": 65,
+  "min_component_area": 200,
+  "design_silicon_mismatch_count": 7,
+  "extraction_check_reference_vs_metadata": 1.0,
+  "truth_distribution": {
+    "NOMINAL": 58,
+    "BRIDGE": 6,
+    "OPEN": 1
+  },
+  "frontends": {
+    "unet": {
+      "n": 65,
+      "correct": 54,
+      "accuracy": 0.8307692307692308,
+      "wrong_calls": 11,
+      "false_alarm": 9,
+      "missed_defect": 2,
+      "miscategorised": 0,
+      "verdict_distribution": {
+        "NOMINAL": 51,
+        "OPEN": 9,
+        "BRIDGE": 5
+      }
+    },
+    "deeplabv3plus": {
+      "n": 65,
+      "correct": 59,
+      "accuracy": 0.9076923076923077,
+      "wrong_calls": 6,
+      "false_alarm": 4,
+      "missed_defect": 2,
+      "miscategorised": 0,
+      "verdict_distribution": {
+        "NOMINAL": 56,
+        "BRIDGE": 5,
+        "OPEN": 4
+      }
+    },
+    "hrnet": {
+      "n": 65,
+      "correct": 58,
+      "accuracy": 0.8923076923076924,
+      "wrong_calls": 7,
+      "false_alarm": 4,
+      "missed_defect": 2,
+      "miscategorised": 1,
+      "verdict_distribution": {
+        "NOMINAL": 56,
+        "OPEN": 5,
+        "BRIDGE": 4
+      }
+    },
+    "segformer": {
+      "n": 65,
+      "correct": 52,
+      "accuracy": 0.8,
+      "wrong_calls": 13,
+      "false_alarm": 10,
+      "missed_defect": 2,
+      "miscategorised": 1,
+      "verdict_distribution": {
+        "NOMINAL": 50,
+        "OPEN": 9,
+        "BRIDGE": 6
+      }
+    }
+  }
+}

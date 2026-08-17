@@ -1,0 +1,26 @@
+{
+  "n_extreme": 62,
+  "tau_px": 2.651473326931816,
+  "breakpoint": 0.45375824,
+  "breakpoint_ci95": [
+    0.30379838825,
+    0.528121945
+  ],
+  "f_test_p_two_piece_vs_linear": 9.13854622092076e-07,
+  "cd_mae_mean_below_bp": 11.09015184726,
+  "n_below": 15,
+  "cd_mae_mean_above_bp": 0.4318384141787233,
+  "n_above": 47,
+  "n_fail": 8,
+  "fg_min_extreme": 0.10704041,
+  "fg_min_standard": 0.21094894,
+  "standard_overlap_n": 39,
+  "standard_overlap_cd_mae_max": 4.5497354,
+  "standard_overlap_cd_mae_median": 0.051757812,
+  "logistic": {
+    "coef_fg_z": -3.0660061525652402,
+    "coef_rbbox_z": 0.2783919345412298,
+    "lr_p_fg": 0.06908720390269636,
+    "lr_p_rbbox": 0.9328874787615781
+  }
+}

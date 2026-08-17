@@ -1,0 +1,11 @@
+{
+  "n": 62,
+  "breakpoint": 0.45375824,
+  "sup_F_observed": 13.499179639126066,
+  "p_naive_F_3_nm5": 9.13854622092076e-07,
+  "p_bootstrap_null": 0.0004997501249375312,
+  "null_draws": 2000,
+  "null_F_median": 1.9897919036776284,
+  "null_F_p95": 4.527580454424234,
+  "note": "The breakpoint is estimated, so the statistic is a sup-F and the naive F(3, n-5) reference distribution is anti-conservative (Davies problem). The bootstrap p-value is the defensible one."
+}

@@ -1,0 +1,179 @@
+{
+  "n_boot": 2000,
+  "seed": 42,
+  "breakpoint": {
+    "n": 62,
+    "breakpoint": 0.45375824,
+    "sup_F_observed": 13.499179639126066,
+    "p_naive_F_3_nm5": 9.13854622092076e-07,
+    "p_bootstrap_null": 0.0004997501249375312,
+    "null_draws": 2000,
+    "null_F_median": 1.9897919036776284,
+    "null_F_p95": 4.527580454424234,
+    "note": "The breakpoint is estimated, so the statistic is a sup-F and the naive F(3, n-5) reference distribution is anti-conservative (Davies problem). The bootstrap p-value is the defensible one."
+  },
+  "auroc": [
+    {
+      "setting": "extreme_segformer",
+      "statistic": "disagreement",
+      "n": 62,
+      "n_fail": 8,
+      "auroc": 0.9097222222222222,
+      "ci_lo": 0.6980629747610879,
+      "ci_hi": 1.0
+    },
+    {
+      "setting": "extreme_segformer",
+      "statistic": "fg_dev",
+      "n": 62,
+      "n_fail": 8,
+      "auroc": 0.9606481481481481,
+      "ci_lo": 0.8771794871794871,
+      "ci_hi": 1.0
+    },
+    {
+      "setting": "extreme_segformer",
+      "statistic": "cc_dev",
+      "n": 62,
+      "n_fail": 8,
+      "auroc": 0.8414351851851852,
+      "ci_lo": 0.6369047619047619,
+      "ci_hi": 0.9883116883116884
+    },
+    {
+      "setting": "extreme_segformer",
+      "statistic": "diff_disagreement_minus_fg_dev",
+      "n": 62,
+      "n_fail": 8,
+      "auroc": -0.04884762025416467,
+      "ci_lo": -0.26190476190476186,
+      "ci_hi": 0.09433962264150941
+    },
+    {
+      "setting": "extreme_segformer",
+      "statistic": "diff_disagreement_minus_cc_dev",
+      "n": 62,
+      "n_fail": 8,
+      "auroc": 0.06977955101908279,
+      "ci_lo": -0.1956094426406926,
+      "ci_hi": 0.3077550183692424
+    },
+    {
+      "setting": "extreme_all_models",
+      "statistic": "disagreement",
+      "n": 248,
+      "n_fail": 13,
+      "auroc": 0.7292962356792144,
+      "ci_lo": 0.43250015352493243,
+      "ci_hi": 0.9918367346938776
+    },
+    {
+      "setting": "extreme_all_models",
+      "statistic": "fg_dev",
+      "n": 248,
+      "n_fail": 13,
+      "auroc": 0.776759410801964,
+      "ci_lo": 0.6181449275362318,
+      "ci_hi": 1.0
+    },
+    {
+      "setting": "extreme_all_models",
+      "statistic": "cc_dev",
+      "n": 248,
+      "n_fail": 13,
+      "auroc": 0.7649754500818331,
+      "ci_lo": 0.5682746175393234,
+      "ci_hi": 0.9822937732450023
+    },
+    {
+      "setting": "extreme_all_models",
+      "statistic": "diff_disagreement_minus_fg_dev",
+      "n": 248,
+      "n_fail": 13,
+      "auroc": -0.0441549204573577,
+      "ci_lo": -0.4388630136386971,
+      "ci_hi": 0.3142214884506774
+    },
+    {
+      "setting": "extreme_all_models",
+      "statistic": "diff_disagreement_minus_cc_dev",
+      "n": 248,
+      "n_fail": 13,
+      "auroc": -0.024028905409250352,
+      "ci_lo": -0.42493073239396767,
+      "ci_hi": 0.35719194521530295
+    },
+    {
+      "setting": "pooled_all",
+      "statistic": "disagreement",
+      "n": 488,
+      "n_fail": 21,
+      "auroc": 0.7739369837870909,
+      "ci_lo": 0.5919956948000938,
+      "ci_hi": 0.9915820048045424
+    },
+    {
+      "setting": "pooled_all",
+      "statistic": "fg_dev",
+      "n": 488,
+      "n_fail": 21,
+      "auroc": 0.7637401855817273,
+      "ci_lo": 0.5608494077074195,
+      "ci_hi": 0.967550001264551
+    },
+    {
+      "setting": "pooled_all",
+      "statistic": "cc_dev",
+      "n": 488,
+      "n_fail": 21,
+      "auroc": 0.7577750586315897,
+      "ci_lo": 0.5888041315366815,
+      "ci_hi": 0.9765431647342481
+    },
+    {
+      "setting": "pooled_all",
+      "statistic": "diff_disagreement_minus_fg_dev",
+      "n": 488,
+      "n_fail": 21,
+      "auroc": 0.012008822955288764,
+      "ci_lo": -0.2821826999700188,
+      "ci_hi": 0.32896612980004636
+    },
+    {
+      "setting": "pooled_all",
+      "statistic": "diff_disagreement_minus_cc_dev",
+      "n": 488,
+      "n_fail": 21,
+      "auroc": 0.021495204324171843,
+      "ci_lo": -0.2697507507175743,
+      "ci_hi": 0.31182255296572925
+    }
+  ],
+  "tau_px": 2.651473326931816,
+  "comparisons": {
+    "extreme_segformer:disagreement_vs_fg_dev": {
+      "p_raw": 0.8084042021010506,
+      "p_holm": 1.0
+    },
+    "extreme_segformer:disagreement_vs_cc_dev": {
+      "p_raw": 0.543,
+      "p_holm": 1.0
+    },
+    "extreme_all_models:disagreement_vs_fg_dev": {
+      "p_raw": 0.8144072036018009,
+      "p_holm": 1.0
+    },
+    "extreme_all_models:disagreement_vs_cc_dev": {
+      "p_raw": 0.9464732366183092,
+      "p_holm": 1.0
+    },
+    "pooled_all:disagreement_vs_fg_dev": {
+      "p_raw": 0.97,
+      "p_holm": 1.0
+    },
+    "pooled_all:disagreement_vs_cc_dev": {
+      "p_raw": 0.902,
+      "p_holm": 1.0
+    }
+  }
+}

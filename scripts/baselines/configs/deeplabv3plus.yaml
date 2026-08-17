@@ -1,0 +1,6 @@
+_base_: _base_.yaml
+
+model:
+  name: smp_deeplabv3plus
+  encoder: resnet50
+  encoder_weights: imagenet

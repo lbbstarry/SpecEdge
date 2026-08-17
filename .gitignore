@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+
+# Environments / IDE
+.venv/
+venv/
+.vscode/
+.idea/
+.DS_Store
+
+# Model weights
+*.pth
+*.pt
+*.bin
+*.safetensors
+*.ckpt
+
+# Data: SEM acquisitions and reference masks are production material
+dataset/
+models/
+
+# Run outputs. The aggregated results under output/revision_v4 are tracked
+# deliberately (added with -f) so that scripts/verify_claims.py can be run
+# without re-running the pipeline.
+output/*
+!output/revision_v4/
+runs/
+*.log
+
+# Generated figures
+paper/figures/*
+!paper/figures/.gitkeep

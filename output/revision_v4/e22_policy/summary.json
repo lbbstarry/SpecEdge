@@ -1,0 +1,151 @@
+{
+  "monitored": "segformer",
+  "threshold_percentile": 95.0,
+  "threshold": 0.009419297910193013,
+  "note": "always_fallback is the policy of deploying the fallback frontend alone and deleting the guard. It is the baseline the guard must beat to justify its cost.",
+  "cd_error": {
+    "unet": {
+      "standard": {
+        "n": 60,
+        "flag_rate": 0.05,
+        "always_monitored": {
+          "mean": 0.13532606031366665,
+          "max": 4.5497354,
+          "p90": 0.12251752200000002
+        },
+        "always_fallback": {
+          "mean": 2.196238150063333,
+          "max": 119.72289,
+          "p90": 0.139664418
+        },
+        "routed": {
+          "mean": 2.185007914563667,
+          "max": 119.72289,
+          "p90": 0.134138757
+        }
+      },
+      "extreme": {
+        "n": 62,
+        "flag_rate": 0.6290322580645161,
+        "always_monitored": {
+          "mean": 3.010462631859678,
+          "max": 48.21715,
+          "p90": 4.190786379999999
+        },
+        "always_fallback": {
+          "mean": 0.36874125018709686,
+          "max": 3.4151088,
+          "p90": 1.0101162259999994
+        },
+        "routed": {
+          "mean": 0.3327298726741936,
+          "max": 3.3701869,
+          "p90": 0.8453458459999997
+        }
+      }
+    },
+    "deeplabv3plus": {
+      "standard": {
+        "n": 60,
+        "flag_rate": 0.05,
+        "always_monitored": {
+          "mean": 0.13532606031366665,
+          "max": 4.5497354,
+          "p90": 0.12251752200000002
+        },
+        "always_fallback": {
+          "mean": 0.2517926628016667,
+          "max": 7.5088368,
+          "p90": 0.100867658
+        },
+        "routed": {
+          "mean": 0.254459994247,
+          "max": 7.5088368,
+          "p90": 0.11176786800000003
+        }
+      },
+      "extreme": {
+        "n": 62,
+        "flag_rate": 0.6290322580645161,
+        "always_monitored": {
+          "mean": 3.010462631859678,
+          "max": 48.21715,
+          "p90": 4.190786379999999
+        },
+        "always_fallback": {
+          "mean": 0.46950958528596776,
+          "max": 3.5554897,
+          "p90": 0.9607225159999997
+        },
+        "routed": {
+          "mean": 0.44464940286290333,
+          "max": 3.3701869,
+          "p90": 0.8534959489999998
+        }
+      }
+    },
+    "hrnet": {
+      "standard": {
+        "n": 60,
+        "flag_rate": 0.05,
+        "always_monitored": {
+          "mean": 0.13532606031366665,
+          "max": 4.5497354,
+          "p90": 0.12251752200000002
+        },
+        "always_fallback": {
+          "mean": 0.28014284025849995,
+          "max": 10.17232,
+          "p90": 0.09357053190000002
+        },
+        "routed": {
+          "mean": 0.29887474236366657,
+          "max": 10.17232,
+          "p90": 0.11176786800000003
+        }
+      },
+      "extreme": {
+        "n": 62,
+        "flag_rate": 0.6290322580645161,
+        "always_monitored": {
+          "mean": 3.010462631859678,
+          "max": 48.21715,
+          "p90": 4.190786379999999
+        },
+        "always_fallback": {
+          "mean": 0.39368789158499995,
+          "max": 3.4798061,
+          "p90": 1.0376844299999999
+        },
+        "routed": {
+          "mean": 0.3933265733898387,
+          "max": 3.3701869,
+          "p90": 1.0376844299999999
+        }
+      }
+    }
+  },
+  "design_verdicts": {
+    "unet": {
+      "n": 62,
+      "flag_rate": 0.6290322580645161,
+      "always_monitored": 12,
+      "always_fallback": 10,
+      "routed": 4
+    },
+    "deeplabv3plus": {
+      "n": 62,
+      "flag_rate": 0.6290322580645161,
+      "always_monitored": 12,
+      "always_fallback": 5,
+      "routed": 5
+    },
+    "hrnet": {
+      "n": 62,
+      "flag_rate": 0.6290322580645161,
+      "always_monitored": 12,
+      "always_fallback": 6,
+      "routed": 6
+    }
+  }
+}

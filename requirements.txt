@@ -1,0 +1,34 @@
+# Core
+torch>=2.0.0
+torchvision>=0.15.0
+transformers==4.44.2
+peft>=0.7.0
+accelerate>=0.25.0
+
+# InternVL2 dependencies
+timm
+einops
+sentencepiece
+tiktoken
+tokenizers
+
+# SAM
+segment-anything
+
+# Data
+opencv-python>=4.8.0
+pycocotools>=2.0.6
+scikit-image
+
+# Training
+deepspeed
+tensorboard
+flash-attn  # pip install flash-attn --no-build-isolation
+
+# Utils
+scipy>=1.11.0
+numpy>=1.24.0
+matplotlib>=3.7.0
+huggingface_hub
+packaging
+gradio

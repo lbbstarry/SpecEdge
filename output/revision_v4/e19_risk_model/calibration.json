@@ -1,0 +1,45 @@
+{
+  "monitored": "segformer",
+  "n_features": 3,
+  "features": [
+    "disagreement",
+    "fg_dev",
+    "cc_dev"
+  ],
+  "n_folds": 5,
+  "in_dist": {
+    "brier": 0.07758083918438832,
+    "reliability": 0.003913934720727522,
+    "resolution": 0.01344901311010396,
+    "uncertainty": 0.08616780045351473,
+    "ece": 0.02344002094977348,
+    "base_rate": 0.09523809523809523,
+    "n": 588,
+    "auroc": 0.6961096938775511
+  },
+  "extreme": {
+    "brier": 0.1637450870112517,
+    "reliability": 0.05317881015366728,
+    "resolution": 0.03950690335305721,
+    "uncertainty": 0.15053254437869823,
+    "ece": 0.12046668521120141,
+    "base_rate": 0.18461538461538463,
+    "n": 65,
+    "auroc": 0.7311320754716981
+  },
+  "cross_fit_repeats": {
+    "n_repeats": 40,
+    "auroc_mean": 0.6897002551020408,
+    "auroc_sd": 0.025021615198700217,
+    "auroc_min": 0.6199650912996778,
+    "auroc_max": 0.7226604457572503,
+    "ece_mean": 0.023232789698111045
+  },
+  "drift": {
+    "ece_in_dist": 0.02344002094977348,
+    "ece_extreme": 0.12046668521120141,
+    "ece_ratio": 5.139359110187381,
+    "mean_predicted_extreme": 0.2633216527646816,
+    "observed_extreme": 0.18461538461538463
+  }
+}

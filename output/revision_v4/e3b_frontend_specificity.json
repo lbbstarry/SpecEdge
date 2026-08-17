@@ -1,0 +1,69 @@
+{
+  "tau_px": 2.651473326931816,
+  "results": [
+    {
+      "model": "unet",
+      "n": 62,
+      "breakpoint": 0.6826,
+      "breakpoint_ci95": [
+        0.266,
+        0.6835
+      ],
+      "f_test_p": 0.0006532334352493388,
+      "n_below": 52,
+      "n_above": 10,
+      "cd_mae_below": 0.4318,
+      "cd_mae_above": 0.0407,
+      "below_exceeds_tau": false,
+      "n_fail": 1
+    },
+    {
+      "model": "deeplabv3plus",
+      "n": 62,
+      "breakpoint": 0.5575,
+      "breakpoint_ci95": [
+        0.1136,
+        0.6799
+      ],
+      "f_test_p": 0.19386193819613237,
+      "n_below": 26,
+      "n_above": 36,
+      "cd_mae_below": 0.6954,
+      "cd_mae_above": 0.3064,
+      "below_exceeds_tau": false,
+      "n_fail": 2
+    },
+    {
+      "model": "hrnet",
+      "n": 62,
+      "breakpoint": 0.2651,
+      "breakpoint_ci95": [
+        0.2651,
+        0.6943
+      ],
+      "f_test_p": 0.04841065479045383,
+      "n_below": 6,
+      "n_above": 56,
+      "cd_mae_below": 0.092,
+      "cd_mae_above": 0.426,
+      "below_exceeds_tau": false,
+      "n_fail": 2
+    },
+    {
+      "model": "segformer",
+      "n": 62,
+      "breakpoint": 0.4538,
+      "breakpoint_ci95": [
+        0.3318,
+        0.5281
+      ],
+      "f_test_p": 9.138546220920775e-07,
+      "n_below": 15,
+      "n_above": 47,
+      "cd_mae_below": 11.0902,
+      "cd_mae_above": 0.4318,
+      "below_exceeds_tau": true,
+      "n_fail": 8
+    }
+  ]
+}

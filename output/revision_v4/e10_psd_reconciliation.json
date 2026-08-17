@@ -1,0 +1,54 @@
+{
+  "standard": {
+    "unet": {
+      "psd2d_pred_over_gt": 1.0921403668273786,
+      "psd1d_pred_mean": 0.04998826769999999,
+      "psd1d_gt_mean": 0.07672623969999998,
+      "psd1d_pred_over_gt": 0.6834253395892282
+    },
+    "deeplabv3plus": {
+      "psd2d_pred_over_gt": 1.1586462502012338,
+      "psd1d_pred_mean": 0.035362009846666674,
+      "psd1d_gt_mean": 0.07672623969999998,
+      "psd1d_pred_over_gt": 0.48000207337878753
+    },
+    "hrnet": {
+      "psd2d_pred_over_gt": 1.0953336484548264,
+      "psd1d_pred_mean": 0.04903318880166666,
+      "psd1d_gt_mean": 0.07672623969999998,
+      "psd1d_pred_over_gt": 0.6611750007258282
+    },
+    "segformer": {
+      "psd2d_pred_over_gt": 1.1511793536392834,
+      "psd1d_pred_mean": 0.036250357799999994,
+      "psd1d_gt_mean": 0.07672623969999998,
+      "psd1d_pred_over_gt": 0.49601016266893166
+    }
+  },
+  "extreme": {
+    "unet": {
+      "psd2d_pred_over_gt": 1.2399008031267027,
+      "psd1d_pred_mean": 0.04258655888888889,
+      "psd1d_gt_mean": 0.10450871587096774,
+      "psd1d_pred_over_gt": 0.5261128934246461
+    },
+    "deeplabv3plus": {
+      "psd2d_pred_over_gt": 1.297290331647991,
+      "psd1d_pred_mean": 0.028096940806451615,
+      "psd1d_gt_mean": 0.10450871587096774,
+      "psd1d_pred_over_gt": 0.38527210604241396
+    },
+    "hrnet": {
+      "psd2d_pred_over_gt": 1.2455856505402771,
+      "psd1d_pred_mean": 0.04101601003225806,
+      "psd1d_gt_mean": 0.10450871587096774,
+      "psd1d_pred_over_gt": 0.5155030084188897
+    },
+    "segformer": {
+      "psd2d_pred_over_gt": 1.2441046632133739,
+      "psd1d_pred_mean": 0.02609361572096774,
+      "psd1d_gt_mean": 0.10450871587096774,
+      "psd1d_pred_over_gt": 0.332370972424765
+    }
+  }
+}

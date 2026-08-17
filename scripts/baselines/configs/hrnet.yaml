@@ -1,0 +1,9 @@
+_base_: _base_.yaml
+
+# 通过 smp 的 encoder_name=tu-hrnet_w32 调用 timm HRNet 作为编码器,
+# 解码器仍使用 smp 的轻量 head。若需更纯粹的 HRNet 分割头,
+# 切换到 mmsegmentation 实现。
+model:
+  name: smp_unet
+  encoder: tu-hrnet_w32
+  encoder_weights: imagenet

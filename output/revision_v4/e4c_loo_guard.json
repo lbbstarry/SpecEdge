@@ -1,0 +1,189 @@
+{
+  "tau_px": 2.651473326931816,
+  "results": [
+    {
+      "ensemble": "unet+deeplabv3plus+hrnet+segformer",
+      "scope": "extreme_segformer",
+      "n": 62,
+      "n_fail": 8,
+      "auroc": 0.9097,
+      "spearman": 0.419
+    },
+    {
+      "ensemble": "unet+deeplabv3plus+hrnet+segformer",
+      "scope": "extreme_all_in_ensemble",
+      "n": 248,
+      "n_fail": 13,
+      "auroc": 0.7293,
+      "spearman": 0.2357
+    },
+    {
+      "ensemble": "unet+deeplabv3plus+hrnet+segformer",
+      "scope": "pooled_all",
+      "n": 488,
+      "n_fail": 21,
+      "auroc": 0.7739,
+      "spearman": 0.4606
+    },
+    {
+      "ensemble": "deeplabv3plus+hrnet+segformer",
+      "scope": "extreme_segformer",
+      "n": 62,
+      "n_fail": 8,
+      "auroc": 0.9074,
+      "spearman": 0.394
+    },
+    {
+      "ensemble": "deeplabv3plus+hrnet+segformer",
+      "scope": "extreme_all_in_ensemble",
+      "n": 186,
+      "n_fail": 12,
+      "auroc": 0.7807,
+      "spearman": 0.3568
+    },
+    {
+      "ensemble": "deeplabv3plus+hrnet+segformer",
+      "scope": "pooled_all",
+      "n": 366,
+      "n_fail": 17,
+      "auroc": 0.7982,
+      "spearman": 0.4557
+    },
+    {
+      "ensemble": "unet+hrnet+segformer",
+      "scope": "extreme_segformer",
+      "n": 62,
+      "n_fail": 8,
+      "auroc": 0.919,
+      "spearman": 0.3854
+    },
+    {
+      "ensemble": "unet+hrnet+segformer",
+      "scope": "extreme_all_in_ensemble",
+      "n": 186,
+      "n_fail": 11,
+      "auroc": 0.7917,
+      "spearman": 0.0761
+    },
+    {
+      "ensemble": "unet+hrnet+segformer",
+      "scope": "pooled_all",
+      "n": 366,
+      "n_fail": 17,
+      "auroc": 0.8144,
+      "spearman": 0.4115
+    },
+    {
+      "ensemble": "unet+deeplabv3plus+segformer",
+      "scope": "extreme_segformer",
+      "n": 62,
+      "n_fail": 8,
+      "auroc": 0.9028,
+      "spearman": 0.4139
+    },
+    {
+      "ensemble": "unet+deeplabv3plus+segformer",
+      "scope": "extreme_all_in_ensemble",
+      "n": 186,
+      "n_fail": 11,
+      "auroc": 0.7538,
+      "spearman": 0.2746
+    },
+    {
+      "ensemble": "unet+deeplabv3plus+segformer",
+      "scope": "pooled_all",
+      "n": 366,
+      "n_fail": 17,
+      "auroc": 0.7866,
+      "spearman": 0.4693
+    },
+    {
+      "ensemble": "unet+deeplabv3plus+hrnet",
+      "scope": "extreme_all_in_ensemble",
+      "n": 186,
+      "n_fail": 5,
+      "auroc": 0.5249,
+      "spearman": 0.3378
+    },
+    {
+      "ensemble": "unet+deeplabv3plus+hrnet",
+      "scope": "pooled_all",
+      "n": 366,
+      "n_fail": 12,
+      "auroc": 0.7036,
+      "spearman": 0.5047
+    },
+    {
+      "ensemble": "segformer+unet",
+      "scope": "extreme_segformer",
+      "n": 62,
+      "n_fail": 8,
+      "auroc": 0.9051,
+      "spearman": 0.389
+    },
+    {
+      "ensemble": "segformer+unet",
+      "scope": "extreme_all_in_ensemble",
+      "n": 124,
+      "n_fail": 9,
+      "auroc": 0.8043,
+      "spearman": 0.1074
+    },
+    {
+      "ensemble": "segformer+unet",
+      "scope": "pooled_all",
+      "n": 244,
+      "n_fail": 13,
+      "auroc": 0.8333,
+      "spearman": 0.3371
+    },
+    {
+      "ensemble": "segformer+deeplabv3plus",
+      "scope": "extreme_segformer",
+      "n": 62,
+      "n_fail": 8,
+      "auroc": 0.9005,
+      "spearman": 0.378
+    },
+    {
+      "ensemble": "segformer+deeplabv3plus",
+      "scope": "extreme_all_in_ensemble",
+      "n": 124,
+      "n_fail": 10,
+      "auroc": 0.8123,
+      "spearman": 0.416
+    },
+    {
+      "ensemble": "segformer+deeplabv3plus",
+      "scope": "pooled_all",
+      "n": 244,
+      "n_fail": 13,
+      "auroc": 0.8233,
+      "spearman": 0.574
+    },
+    {
+      "ensemble": "segformer+hrnet",
+      "scope": "extreme_segformer",
+      "n": 62,
+      "n_fail": 8,
+      "auroc": 0.9282,
+      "spearman": 0.3819
+    },
+    {
+      "ensemble": "segformer+hrnet",
+      "scope": "extreme_all_in_ensemble",
+      "n": 124,
+      "n_fail": 10,
+      "auroc": 0.8544,
+      "spearman": 0.1813
+    },
+    {
+      "ensemble": "segformer+hrnet",
+      "scope": "pooled_all",
+      "n": 244,
+      "n_fail": 13,
+      "auroc": 0.8606,
+      "spearman": 0.3105
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+_base_: _base_.yaml
+
+model:
+  name: mmseg
+  cfg: configs/mmseg/mask2former_r50_512x512_litho.py

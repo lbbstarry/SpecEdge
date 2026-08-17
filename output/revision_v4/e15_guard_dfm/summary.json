@@ -1,0 +1,124 @@
+{
+  "monitored": "segformer",
+  "n": 62,
+  "calibration_percentiles": {
+    "80": 0.0080171970693957,
+    "90": 0.0088564526561646,
+    "95": 0.009419297910193013
+  },
+  "baseline_monitored_only": {
+    "wrong": 12,
+    "false_alarm": 9,
+    "missed": 2
+  },
+  "fallback_only": {
+    "unet": {
+      "wrong": 10,
+      "false_alarm": 8,
+      "missed": 2
+    },
+    "deeplabv3plus": {
+      "wrong": 5,
+      "false_alarm": 3,
+      "missed": 2
+    },
+    "hrnet": {
+      "wrong": 6,
+      "false_alarm": 3,
+      "missed": 2
+    }
+  },
+  "routed": {
+    "p80_unet": {
+      "wrong": 4,
+      "false_alarm": 2,
+      "missed": 2,
+      "d_star": 0.0080171970693957,
+      "flag_rate": 0.7580645161290323,
+      "n_flagged": 47,
+      "wrong_before": 12,
+      "wrong_reduction": 8
+    },
+    "p80_deeplabv3plus": {
+      "wrong": 5,
+      "false_alarm": 3,
+      "missed": 2,
+      "d_star": 0.0080171970693957,
+      "flag_rate": 0.7580645161290323,
+      "n_flagged": 47,
+      "wrong_before": 12,
+      "wrong_reduction": 7
+    },
+    "p80_hrnet": {
+      "wrong": 6,
+      "false_alarm": 3,
+      "missed": 2,
+      "d_star": 0.0080171970693957,
+      "flag_rate": 0.7580645161290323,
+      "n_flagged": 47,
+      "wrong_before": 12,
+      "wrong_reduction": 6
+    },
+    "p90_unet": {
+      "wrong": 4,
+      "false_alarm": 2,
+      "missed": 2,
+      "d_star": 0.0088564526561646,
+      "flag_rate": 0.6935483870967742,
+      "n_flagged": 43,
+      "wrong_before": 12,
+      "wrong_reduction": 8
+    },
+    "p90_deeplabv3plus": {
+      "wrong": 5,
+      "false_alarm": 3,
+      "missed": 2,
+      "d_star": 0.0088564526561646,
+      "flag_rate": 0.6935483870967742,
+      "n_flagged": 43,
+      "wrong_before": 12,
+      "wrong_reduction": 7
+    },
+    "p90_hrnet": {
+      "wrong": 6,
+      "false_alarm": 3,
+      "missed": 2,
+      "d_star": 0.0088564526561646,
+      "flag_rate": 0.6935483870967742,
+      "n_flagged": 43,
+      "wrong_before": 12,
+      "wrong_reduction": 6
+    },
+    "p95_unet": {
+      "wrong": 4,
+      "false_alarm": 2,
+      "missed": 2,
+      "d_star": 0.009419297910193013,
+      "flag_rate": 0.6290322580645161,
+      "n_flagged": 39,
+      "wrong_before": 12,
+      "wrong_reduction": 8
+    },
+    "p95_deeplabv3plus": {
+      "wrong": 5,
+      "false_alarm": 3,
+      "missed": 2,
+      "d_star": 0.009419297910193013,
+      "flag_rate": 0.6290322580645161,
+      "n_flagged": 39,
+      "wrong_before": 12,
+      "wrong_reduction": 7
+    },
+    "p95_hrnet": {
+      "wrong": 6,
+      "false_alarm": 3,
+      "missed": 2,
+      "d_star": 0.009419297910193013,
+      "flag_rate": 0.6290322580645161,
+      "n_flagged": 39,
+      "wrong_before": 12,
+      "wrong_reduction": 6
+    }
+  },
+  "oracle_best_per_sample_wrong": 4
+}

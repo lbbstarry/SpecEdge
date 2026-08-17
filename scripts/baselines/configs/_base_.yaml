@@ -1,0 +1,31 @@
+# 公共训练配置, 各模型 yaml 用 `_base_: _base_.yaml` 继承
+seed: 42
+
+data:
+  root: dataset/litho
+  image_size: [512, 512]
+  num_classes: 2          # 二值分割: 背景 / 前景
+  batch_size: 8
+  num_workers: 4
+  augment:
+    hflip: true
+    vflip: true
+    rotate90: true
+    brightness: 0.1
+    contrast: 0.1
+
+train:
+  epochs: 100
+  optimizer: adamw
+  lr: 1.0e-4
+  weight_decay: 1.0e-4
+  scheduler: cosine
+  warmup_epochs: 100
+  loss: bce_dice          # baseline 统一用 BCE+Dice; 跑 ours 时切换
+  amp: true
+
+eval:
+  metrics: [iou, dice, boundary_f1, hausdorff95, edge_psd_hf_ratio]
+  boundary_tolerance_px: 2
+  psd:
+    hf_cutoff_ratio: 0.5  # 高频段定义为 [0.5*Nyquist, Nyquist]
