@@ -128,7 +128,9 @@ python scripts/verify_claims.py
 ## Data availability
 
 The SEM acquisitions and the reference masks derived from them are production material
-and cannot be redistributed. What is here is the full analysis pipeline, the metrology
+and cannot be redistributed. The reference masks were produced by LithoSeg
+([arXiv:2511.12005](https://arxiv.org/abs/2511.12005)), separate work by the author and
+colleagues; that protocol is an input to the present study rather than part of it. What is here is the full analysis pipeline, the metrology
 extractor, the qualification and guard protocols, every script that turns masks into
 the reported numbers, and the aggregated per-sample results those scripts produced.
 The aggregates contain measurement values and zero-padded sample indices only, no
