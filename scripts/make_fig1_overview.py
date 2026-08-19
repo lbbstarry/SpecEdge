@@ -170,13 +170,19 @@ def panel_b(ax) -> None:
     BINS = [(0.980, 0.985), (0.985, 0.990), (0.990, 0.995)]
 
     n_clip = int((df["iou"] < XLO).sum())
+    iou_min = float(df["iou"].min())
     for i, (lo, hi) in enumerate(BINS):  # alternate shading marks the bins
         if i % 2 == 1:
             ax.axvspan(lo, hi, color=BG_AQUA, zorder=0)
+    # distinct markers as well as colours: the three CNN blues are close in
+    # value, and at print size hue alone does not separate them
+    markers = {"unet": "o", "deeplabv3plus": "s", "hrnet": "^",
+               "segformer": "D"}
     for model in MODEL_COLORS:  # family order; SegFormer drawn last, on top
         sub = df[df["model"] == model]
-        ax.scatter(sub["iou"], sub["cd"], s=6, c=MODEL_COLORS[model],
-                   label=MODEL_LABELS[model], alpha=0.8, linewidths=0)
+        ax.scatter(sub["iou"], sub["cd"], s=7, c=MODEL_COLORS[model],
+                   marker=markers[model], label=MODEL_LABELS[model],
+                   alpha=0.8, linewidths=0)
 
     # one p5-p95 bar per bin, with the ratio the text quotes printed above it
     for lo, hi in BINS:
@@ -193,7 +199,9 @@ def panel_b(ax) -> None:
     ax.set_xlim(XLO, XHI)
     ax.set_ylim(6e-4, 4e3)  # headroom for the legend and the ratio labels
     ax.set_xticks([0.980, 0.985, 0.990, 0.995])
-    ax.text(0.015, 0.02, f"$\\leftarrow$ {n_clip} of 240 records, IoU < {XLO}",
+    ax.text(0.015, 0.02,
+            f"$\\leftarrow$ {n_clip} of {len(df)} records off-axis, "
+            f"down to IoU {iou_min:.2f}",
             transform=ax.transAxes, fontsize=5.5, color=NEUTRAL_MID,
             va="bottom")
     ax.text(0.985, 0.055, "bars: p5--p95 within bin", transform=ax.transAxes,
