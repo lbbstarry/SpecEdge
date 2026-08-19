@@ -127,6 +127,21 @@ CLAIMS: list[tuple[str, str, str, str, str]] = [
     ("0.758", "VIII-G", "e4_summary.json", "pooled_all.auroc_cc_dev",
      "component-count-deviation baseline AUROC, pooled"),
 
+    # --- Section VII-C, guard applied to the design verdicts (E15) ------
+    # Everything here is read at the pre-committed d* = in-distribution P95;
+    # the P80 and P90 rows exist in the artifact and give the same wrong-call
+    # counts but different flag rates, which is what the text now says.
+    ("0.629", "VII-C", "e15_guard_dfm/summary.json", "routed.p95_hrnet.flag_rate",
+     "flag rate at the pre-committed threshold"),
+    ("39", "VII-C", "e15_guard_dfm/summary.json", "routed.p95_hrnet.n_flagged",
+     "samples flagged at that threshold"),
+    ("12", "VII-C", "e15_guard_dfm/summary.json", "baseline_monitored_only.wrong",
+     "wrong design calls deploying SegFormer alone"),
+    ("6", "VII-C", "e15_guard_dfm/summary.json", "routed.p95_hrnet.wrong",
+     "wrong calls after routing to HRNet"),
+    ("4", "VII-C", "e15_guard_dfm/summary.json", "routed.p95_unet.wrong",
+     "wrong calls after routing to U-Net, the best retrospective choice"),
+
     # --- Section VIII-G, policy comparison (E22) ------------------------
     ("0.470", "VIII-G", "e22_policy/summary.json",
      "cd_error.deeplabv3plus.extreme.always_fallback.mean",
