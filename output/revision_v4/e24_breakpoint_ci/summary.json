@@ -1,0 +1,31 @@
+{
+  "n": 62,
+  "seed": 42,
+  "breakpoint": 0.453758,
+  "rule_for_m": "round(n**0.75)",
+  "n_of_n": {
+    "size": 62,
+    "reps": 2000,
+    "ci95": [
+      0.2943,
+      0.5281
+    ],
+    "frac_at_estimate": 0.2925,
+    "frac_modal": 0.2925,
+    "frac_within_0.05": 0.865,
+    "n_distinct": 59
+  },
+  "m_of_n": {
+    "size": 22,
+    "reps": 2000,
+    "ci95": [
+      0.3616,
+      0.6823
+    ],
+    "frac_at_estimate": 0.0625,
+    "frac_modal": 0.0625,
+    "frac_within_0.05": 0.481,
+    "n_distinct": 293
+  },
+  "note": "The estimator is of jump-changepoint type, so the n-out-of-n bootstrap is inconsistent for it and its interval is optimistic; the m-out-of-n interval is the reported one."
+}

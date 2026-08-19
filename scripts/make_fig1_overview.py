@@ -164,29 +164,47 @@ def panel_b(ax) -> None:
     df = pd.DataFrame(rows, columns=["model", "iou", "cd"])
     df["cd"] = df["cd"].clip(lower=1e-3)
 
-    n_clip = int((df["iou"] < 0.965).sum())
+    # 232 of the 240 records sit in [0.980, 0.995]; starting the axis at 0.965
+    # spent half its width on 8 points and hid the spread the panel is about.
+    XLO, XHI = 0.9795, 0.9955
+    BINS = [(0.980, 0.985), (0.985, 0.990), (0.990, 0.995)]
+
+    n_clip = int((df["iou"] < XLO).sum())
+    for i, (lo, hi) in enumerate(BINS):  # alternate shading marks the bins
+        if i % 2 == 1:
+            ax.axvspan(lo, hi, color=BG_AQUA, zorder=0)
     for model in MODEL_COLORS:  # family order; SegFormer drawn last, on top
         sub = df[df["model"] == model]
         ax.scatter(sub["iou"], sub["cd"], s=6, c=MODEL_COLORS[model],
                    label=MODEL_LABELS[model], alpha=0.8, linewidths=0)
-    ax.axvspan(0.99, 0.995, color=BG_AQUA, zorder=0)
-    binned = df[(df["iou"] >= 0.99) & (df["iou"] < 0.995)]["cd"]
-    p5, p95 = np.percentile(binned, [5, 95])
-    ax.annotate("", xy=(0.9925, p95), xytext=(0.9925, p5),
-                arrowprops=dict(arrowstyle="<->", color="black", lw=0.9))
-    ax.text(0.9887, np.sqrt(p5 * p95), f"{p95 / p5:.0f}× spread",
-            fontsize=7, fontweight="bold", ha="right", va="center")
-    ax.set_xlim(0.965, 0.9975)
-    ax.text(0.02, 0.02, f"$\\leftarrow$ {n_clip} samples, IoU < 0.965",
+
+    # one p5-p95 bar per bin, with the ratio the text quotes printed above it
+    for lo, hi in BINS:
+        b = df[(df["iou"] >= lo) & (df["iou"] < hi)]["cd"]
+        p5, p95 = np.percentile(b, [5, 95])
+        x = (lo + hi) / 2
+        ax.plot([x, x], [p5, p95], color="black", lw=1.0, zorder=4)
+        for y in (p5, p95):
+            ax.plot([x - 5e-4, x + 5e-4], [y, y], color="black", lw=1.0,
+                    zorder=4)
+        ax.text(x, p95 * 2.0, f"{p95 / p5:.0f}$\\times$", fontsize=6.5,
+                fontweight="bold", ha="center", va="bottom", zorder=4)
+
+    ax.set_xlim(XLO, XHI)
+    ax.set_ylim(6e-4, 4e3)  # headroom for the legend and the ratio labels
+    ax.set_xticks([0.980, 0.985, 0.990, 0.995])
+    ax.text(0.015, 0.02, f"$\\leftarrow$ {n_clip} of 240 records, IoU < {XLO}",
             transform=ax.transAxes, fontsize=5.5, color=NEUTRAL_MID,
             va="bottom")
+    ax.text(0.985, 0.055, "bars: p5--p95 within bin", transform=ax.transAxes,
+            fontsize=5.5, color="black", ha="right", va="bottom")
     ax.set_yscale("log")
     ax.set_xlabel("per-sample IoU", fontsize=7)
     ax.set_ylabel("CD MAE (px)", fontsize=7)
     ax.set_title("(b) IoU does not rank metrology", fontsize=7.5,
                  fontweight="bold")
     ax.legend(fontsize=5.5, loc="upper left", handletextpad=0.1,
-              borderaxespad=0.2, labelspacing=0.2)
+              borderaxespad=0.2, labelspacing=0.2, ncol=2, columnspacing=0.8)
     ax.tick_params(labelsize=6)
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)
@@ -194,7 +212,11 @@ def panel_b(ax) -> None:
 
 def panel_c(ax) -> None:
     onset = json.load(open(ROOT / "output/revision_v4/e3_onset.json"))
-    tau, bp, ci = onset["tau_px"], onset["breakpoint"], onset["breakpoint_ci95"]
+    tau, bp = onset["tau_px"], onset["breakpoint"]
+    # band = the m-out-of-n interval the paper adopts, not the n-out-of-n one
+    # in e3_onset.json, which the text reports only to reject as optimistic
+    ci = json.load(open(
+        ROOT / "output/revision_v4/e24_breakpoint_ci/summary.json"))["m_of_n"]["ci95"]
 
     ext = pd.read_csv(ROOT / "output/hard_eval/segformer_metrology.csv").dropna(
         subset=["abs_err_cd_mean", "gt_foreground_ratio"])
@@ -216,11 +238,14 @@ def panel_c(ax) -> None:
     ax.annotate("sample (a)", (float(s9["gt_foreground_ratio"].iloc[0]),
                                float(s9["abs_err_cd_mean"].iloc[0])),
                 textcoords="offset points", xytext=(6, -2), fontsize=6)
-    ax.text(bp + 0.008, 2e-3, f"breakpoint {bp:.2f}", fontsize=6, color=ORANGE,
-            rotation=90, va="bottom")
+    # horizontal, above the band: rotated inside the shading it was unreadable
+    ax.set_yscale("log")
+    ax.set_ylim(top=ax.get_ylim()[1] * 12)
+    ax.text(bp, 0.975, f"breakpoint {bp:.2f} [{ci[0]:.2f}, {ci[1]:.2f}]",
+            transform=ax.get_xaxis_transform(), fontsize=6, color=ORANGE,
+            ha="center", va="top")
     ax.text(0.745, tau * 1.5, "$\\tau_\\sigma$ = 2.65 px", fontsize=6,
             color=NEUTRAL_MID, ha="right")
-    ax.set_yscale("log")
     ax.set_xlabel("foreground ratio", fontsize=7)
     ax.set_ylabel("SegFormer CD MAE (px)", fontsize=7)
     ax.set_title("(c) Collapse: OOD × low fg", fontsize=7.5, fontweight="bold")
