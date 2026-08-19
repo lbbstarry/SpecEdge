@@ -33,8 +33,9 @@ from matplotlib.patches import FancyBboxPatch
 from PIL import Image
 from scipy import ndimage as ndi
 
-plt.rcParams["font.family"] = "sans-serif"
-plt.rcParams["font.sans-serif"] = ["Arial", "DejaVu Sans", "Liberation Sans"]
+plt.rcParams["font.family"] = "serif"
+plt.rcParams["font.serif"] = ["Times New Roman", "Nimbus Roman", "Liberation Serif", "DejaVu Serif"]
+plt.rcParams["mathtext.fontset"] = "stix"
 plt.rcParams["svg.fonttype"] = "none"
 plt.rcParams["pdf.fonttype"] = 42
 plt.rcParams["axes.linewidth"] = 0.6
@@ -139,9 +140,9 @@ def panel_a(fig, gs_hero) -> None:
     # shared overlay legend under the strip
     handles = [
         plt.Line2D([], [], marker="s", ls="", mfc=RED_CALLOUT, mec="none",
-                   ms=5, label="spurious foreground (pred ∖ ref)"),
+                   ms=5, label=r"spurious foreground (pred $\setminus$ ref)"),
         plt.Line2D([], [], marker="s", ls="", mfc=ORANGE, mec="none",
-                   ms=5, label="missed foreground (ref ∖ pred)"),
+                   ms=5, label=r"missed foreground (ref $\setminus$ pred)"),
         plt.Line2D([], [], color=CYAN, lw=1.4, label="reference boundary"),
     ]
     axes[0].legend(handles=handles, loc="upper left",
@@ -320,10 +321,12 @@ def panel_loop(ax) -> None:
 
 
 def main() -> None:
-    fig = plt.figure(figsize=(7.16, 4.7))
+    # Row (a) is width-driven: the four square tiles need ~1.57 in, so the row
+    # is sized just above that and the scatter row takes what is left.
+    fig = plt.figure(figsize=(7.16, 3.94))
     gs = gridspec.GridSpec(2, 12, figure=fig, height_ratios=[1.32, 1.0],
-                           hspace=0.44, wspace=2.2,
-                           left=0.075, right=0.985, top=0.925, bottom=0.085)
+                           hspace=0.34, wspace=2.2,
+                           left=0.075, right=0.985, top=0.935, bottom=0.105)
     panel_a(fig, gs[0, :])
     fig.text(0.075, 0.962,
              "(a) Two frontends that are equivalent in distribution, on one "

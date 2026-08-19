@@ -42,7 +42,7 @@ BOX_EDGE = "0.35"
 RED = "#c1272d"
 GRAY = "0.45"
 
-FIG_W, FIG_H = 7.16, 5.0
+FIG_W, FIG_H = 7.16, 1.95
 
 
 def load_gray(path: Path) -> np.ndarray:
@@ -99,9 +99,11 @@ def arrow(ax, x0, y0, x1, y1, color=GRAY) -> None:
 
 def main() -> None:
     plt.rcParams.update({
-        "font.family": "DejaVu Sans",
+        "font.family": "serif",
+        "font.serif": ["Times New Roman", "Nimbus Roman", "Liberation Serif",
+                       "DejaVu Serif"],
         "axes.linewidth": 0.6,
-        "mathtext.fontset": "dejavusans",
+        "mathtext.fontset": "stix",
         "pdf.fonttype": 42,
     })
 
@@ -125,84 +127,12 @@ def main() -> None:
     canvas.set_ylim(0, 1)
     canvas.axis("off")
 
-    # ---------- top band: pipeline schematic ----------
-    thumb_h = 0.23
-    thumb_w = thumb_h * FIG_H / FIG_W
-    ty = 0.72
+    # Zoom window into the line component, in SEM/GT 1024 coordinates.
+    zx0, zx1 = 300, 620
+    zy0, zy1 = 360, 500
 
-    ax_sem = fig.add_axes([0.015, ty, thumb_w, thumb_h])
-    ax_sem.imshow(sem, cmap="gray", vmin=0, vmax=255)
-    ax_sem.set_xticks([]); ax_sem.set_yticks([])
-    ax_sem.set_title("SEM image $I$", fontsize=6.8, fontweight="bold", pad=2)
-
-    box(canvas, 0.225, ty, 0.155, thumb_h,
-        "Segmentation frontend $f_\\phi$",
-        "any binary segmenter")
-
-    ax_mask = fig.add_axes([0.43, ty, thumb_w, thumb_h])
-    ax_mask.imshow(pred, cmap="gray", vmin=0, vmax=1)
-    ax_mask.set_xticks([]); ax_mask.set_yticks([])
-    ax_mask.set_title("mask $\\widehat{M}$", fontsize=6.8, fontweight="bold", pad=2)
-
-    box(canvas, 0.635, ty, 0.155, thumb_h,
-        "Mask-to-metrology extractor",
-        "rule-based, deterministic\n(steps in b\u2013e)")
-
-    box(canvas, 0.845, ty, 0.145, thumb_h,
-        "Metrology record $\\mathbf{m}$",
-        "CD mean / std\nLWR $3\\sigma$, LER $3\\sigma$\nPSD HF ratio\n$\\Delta N$, topology flags")
-
-    ymid = ty + thumb_h / 2
-    arrow(canvas, 0.015 + thumb_w + 0.005, ymid, 0.22, ymid)
-    arrow(canvas, 0.385, ymid, 0.425, ymid)
-    arrow(canvas, 0.43 + thumb_w + 0.005, ymid, 0.63, ymid)
-    arrow(canvas, 0.795, ymid, 0.84, ymid)
-
-    # ---------- offline qualification lane (Contribution 1) ----------
-    qy = 0.565
-    canvas.text(0.015, qy + 0.05, "offline\nqualification",
-                fontsize=6, color="0.35", style="italic",
-                ha="left", va="center", linespacing=1.4)
-    box(canvas, 0.405, qy, 0.15, 0.10,
-        "reference record $\\mathbf{m}_{\\mathrm{ref}}$",
-        "qualification data only")
-    box(canvas, 0.60, qy, 0.20, 0.10, "measurement-error scoring",
-        "$|\\mathbf{m} - \\mathbf{m}_{\\mathrm{ref}}|$ vs. "
-        "$\\sigma_{\\mathrm{ref}}$, across windows")
-    box(canvas, 0.845, qy, 0.145, 0.10, "qualify frontend",
-        "bounded operating region", title_color=TEAL)
-    arrow(canvas, 0.56, qy + 0.05, 0.595, qy + 0.05)
-    arrow(canvas, 0.805, qy + 0.05, 0.84, qy + 0.05)
-    arrow(canvas, 0.9175, ty - 0.005, 0.70, qy + 0.105)
-
-    # ---------- online monitoring lane (Contribution 2) ----------
-    gy = 0.425
-    canvas.text(0.015, gy + 0.05, "online\nmonitoring",
-                fontsize=6, color="0.35", style="italic",
-                ha="left", va="center", linespacing=1.4)
-    box(canvas, 0.225, gy, 0.155, 0.10, "co-deployed frontends",
-        "$\\widehat{M}_1 \\ldots \\widehat{M}_K$")
-    box(canvas, 0.43, gy, 0.19, 0.10, "disagreement",
-        "$d_m = 1 - \\mathrm{mean}_{o \\neq m}\\,\\mathrm{IoU}(\\widehat{M}_m, \\widehat{M}_o)$")
-    box(canvas, 0.67, gy, 0.155, 0.10, "runtime guard",
-        "$d_m > d^{\\star}$: flag / route", title_color=RED)
-    arrow(canvas, 0.3025, ty - 0.005, 0.3025, gy + 0.105)
-    arrow(canvas, 0.385, gy + 0.05, 0.425, gy + 0.05)
-    arrow(canvas, 0.625, gy + 0.05, 0.665, gy + 0.05)
-
-    canvas.text(0.015, 0.99, "(a)", fontsize=8, fontweight="bold", va="top")
-
-    # ---------- red dashed zoom callout on the mask thumbnail ----------
-    zx0, zx1 = 300, 620   # columns of the zoom window (SEM/GT 1024 coords)
-    zy0, zy1 = 360, 500   # rows
-    sx = pred.shape[1] / sem.shape[1]
-    sy = pred.shape[0] / sem.shape[0]
-    ax_mask.add_patch(Rectangle((zx0 * sx, zy0 * sy), (zx1 - zx0) * sx,
-                                (zy1 - zy0) * sy,
-                                fill=False, ec=RED, lw=0.9, ls="--"))
-
-    # ---------- bottom band: measurement principle ----------
-    bw, bh, by = 0.185, 0.26, 0.062
+    # ---------- measurement principle ----------
+    bw, bh, by = 0.185, 0.62, 0.20
     bx = [0.055, 0.305, 0.555, 0.805]
 
     # (b) cross-sections on the component (SEM backdrop + mask fill + edges)
@@ -222,7 +152,7 @@ def main() -> None:
     ax_b.plot(cols[sel], bot[sel], color=VIOLET, lw=1.1)
     ax_b.set_xlabel("position along line $j$ (px)", fontsize=6)
     ax_b.set_ylabel("row (px)", fontsize=6)
-    ax_b.set_title("(b) cross-sections $\\perp$ line", fontsize=6.8,
+    ax_b.set_title("(a) cross-sections $\\perp$ line", fontsize=6.8,
                    fontweight="bold")
     ax_b.tick_params(labelsize=5.5)
     for s in ax_b.spines.values():
@@ -240,7 +170,7 @@ def main() -> None:
               va="top")
     ax_c.set_xlabel("position along line $j$ (px)", fontsize=6)
     ax_c.set_ylabel("edge row (px)", fontsize=6)
-    ax_c.set_title("(c) edge profiles, width $w_j$", fontsize=6.8,
+    ax_c.set_title("(b) edge profiles, width $w_j$", fontsize=6.8,
                    fontweight="bold")
     ax_c.text(0.5, 0.5, f"CD $= \\mathrm{{mean}}_j(w_j)$\n$= {cd_mean:.1f}$ px",
               transform=ax_c.transAxes, fontsize=6.2, ha="center", va="center")
@@ -254,7 +184,7 @@ def main() -> None:
     ax_d.set_ylim(-3 * w_res.std() * 1.6, 3 * w_res.std() * 1.6)
     ax_d.set_xlabel("position along line $j$ (px)", fontsize=6)
     ax_d.set_ylabel("$\\widetilde{w}_j$ (px)", fontsize=6)
-    ax_d.set_title("(d) detrended residual", fontsize=6.8, fontweight="bold")
+    ax_d.set_title("(c) detrended residual", fontsize=6.8, fontweight="bold")
     ax_d.text(0.97, 0.965, f"LWR $3\\sigma = {lwr3:.2f}$ px",
               transform=ax_d.transAxes, fontsize=6, va="top", ha="right")
     ax_d.text(0.97, 0.05, "LER: same statistic on one edge",
@@ -268,7 +198,7 @@ def main() -> None:
     ax_e.axvspan(0.5, 1.0, color="0.88", zorder=0)
     ax_e.set_xlabel("$k$ / Nyquist", fontsize=6)
     ax_e.set_ylabel("edge PSD $P(k)$", fontsize=6)
-    ax_e.set_title("(e) edge PSD, HF half", fontsize=6.8, fontweight="bold")
+    ax_e.set_title("(d) edge PSD, HF half", fontsize=6.8, fontweight="bold")
     ax_e.text(0.05, 0.05, f"HF ratio $= {hf_ratio:.3f}$",
               transform=ax_e.transAxes, fontsize=6, ha="left", va="bottom")
     ax_e.tick_params(labelsize=5.5)

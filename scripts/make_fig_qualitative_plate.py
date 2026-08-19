@@ -24,8 +24,9 @@ from matplotlib import gridspec
 from PIL import Image
 from scipy import ndimage as ndi
 
-plt.rcParams["font.family"] = "sans-serif"
-plt.rcParams["font.sans-serif"] = ["Arial", "DejaVu Sans", "Liberation Sans"]
+plt.rcParams["font.family"] = "serif"
+plt.rcParams["font.serif"] = ["Times New Roman", "Nimbus Roman", "Liberation Serif", "DejaVu Serif"]
+plt.rcParams["mathtext.fontset"] = "stix"
 plt.rcParams["svg.fonttype"] = "none"
 plt.rcParams["pdf.fonttype"] = 42
 plt.rcParams["legend.frameon"] = False
@@ -33,7 +34,7 @@ plt.rcParams["legend.frameon"] = False
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "paper" / "figures" / "fig_qualitative_plate"
 
-SAMPLES = ["14", "10", "22"]
+SAMPLES = ["14", "22"]
 MODELS = ["unet", "deeplabv3plus", "hrnet", "segformer"]
 COL_TITLES = ["SEM + reference", "U-Net", "DeepLabV3+", "HRNet", "SegFormer"]
 TAU = 2.65
@@ -87,9 +88,11 @@ def main() -> None:
             errs[(m, sid)] = float(r["abs_err_cd_mean"].iloc[0])
             fgs[sid] = float(r["gt_foreground_ratio"].iloc[0])
 
-    fig = plt.figure(figsize=(7.16, 4.45))
-    gs = gridspec.GridSpec(3, 5, figure=fig, hspace=0.05, wspace=0.04,
-                           left=0.055, right=0.995, top=0.93, bottom=0.015)
+    # One grid row per sample: the extra unused row left a blank band that
+    # bbox_inches="tight" cannot trim, because the legend anchors below it.
+    fig = plt.figure(figsize=(7.16, 2.30))
+    gs = gridspec.GridSpec(len(SAMPLES), 5, figure=fig, hspace=0.05, wspace=0.04,
+                           left=0.055, right=0.995, top=0.905, bottom=0.055)
 
     for ri, sid in enumerate(SAMPLES):
         sem = np.asarray(Image.open(
@@ -117,9 +120,9 @@ def main() -> None:
 
     handles = [
         plt.Line2D([], [], marker="s", ls="", mfc=RED_CALLOUT, mec="none",
-                   ms=5, label="spurious foreground (pred ∖ ref)"),
+                   ms=5, label=r"spurious foreground (pred $\setminus$ ref)"),
         plt.Line2D([], [], marker="s", ls="", mfc=ORANGE, mec="none",
-                   ms=5, label="missed foreground (ref ∖ pred)"),
+                   ms=5, label=r"missed foreground (ref $\setminus$ pred)"),
         plt.Line2D([], [], color=CYAN, lw=1.4, label="reference boundary"),
     ]
     fig.legend(handles=handles, loc="lower center", ncol=3, fontsize=6,
