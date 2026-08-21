@@ -89,16 +89,15 @@ def load_binary(path: Path, size: int = 1024) -> np.ndarray:
 def plate_cell(ax, sem, pred, gt, label, verdict, verdict_color) -> None:
     """One hero cell: SEM + overlays + on-plate labels (Pattern 13)."""
     ax.imshow(sem, cmap="gray", vmin=0, vmax=255, interpolation="bilinear")
-    if pred is not None:
-        for mask, color in ((pred & ~gt, RED_CALLOUT), (gt & ~pred, ORANGE)):
-            if mask.any():
-                rgba = np.zeros((*mask.shape, 4))
-                rgba[mask] = matplotlib.colors.to_rgba(color, alpha=0.5)
-                ax.imshow(rgba, interpolation="nearest")
-    boundary = gt ^ ndi.binary_erosion(gt, iterations=2)
-    rgba = np.zeros((*boundary.shape, 4))
-    rgba[boundary] = matplotlib.colors.to_rgba(CYAN, alpha=0.9)
-    ax.imshow(rgba, interpolation="nearest")
+    # translucent mask fills, so each colour names a region, not an outline:
+    # agreed foreground in cyan, disagreement on top of it in red / orange
+    for mask, color, alpha in ((pred & gt, CYAN, 0.32),
+                               (pred & ~gt, RED_CALLOUT, 0.5),
+                               (gt & ~pred, ORANGE, 0.5)):
+        if mask.any():
+            rgba = np.zeros((*mask.shape, 4))
+            rgba[mask] = matplotlib.colors.to_rgba(color, alpha=alpha)
+            ax.imshow(rgba, interpolation="nearest")
     ax.set_xticks([])
     ax.set_yticks([])
     for s in ax.spines.values():
@@ -143,11 +142,12 @@ def panel_a(fig, gs_hero) -> None:
 
     # shared overlay legend under the strip
     handles = [
+        plt.Line2D([], [], marker="s", ls="", mfc=CYAN, mec="none",
+                   ms=5, label=r"agreed foreground (pred $\cap$ ref)"),
         plt.Line2D([], [], marker="s", ls="", mfc=RED_CALLOUT, mec="none",
-                   ms=5, label=r"spurious foreground (pred $\setminus$ ref)"),
+                   ms=5, label=r"spurious (pred $\setminus$ ref)"),
         plt.Line2D([], [], marker="s", ls="", mfc=ORANGE, mec="none",
-                   ms=5, label=r"missed foreground (ref $\setminus$ pred)"),
-        plt.Line2D([], [], color=CYAN, lw=1.4, label="reference boundary"),
+                   ms=5, label=r"missed (ref $\setminus$ pred)"),
     ]
     axes[0].legend(handles=handles, loc="upper left",
                    bbox_to_anchor=(0.0, -0.015), fontsize=6, ncol=3,
@@ -174,8 +174,17 @@ def zoom_cell(ax, sem: np.ndarray, gt: np.ndarray) -> None:
     upper = np.array([np.where(g[:, x])[0].min() for x in range(x0, x1)], float)
     r0, r1 = int(band.min()) - 16, int(band.min()) + 13  # strip around the edge
     c = 3.0
+    # The drawn roughening carries a ~4 px correlation length so it reads as a
+    # rough edge rather than pointwise noise, then is rescaled to the same
+    # mean |delta| = c -- a member of the same zero-mean equal-norm family.
+    # The printed numbers stay the E23 population values.
     rng = np.random.default_rng(0)
-    rough = upper - rng.normal(0.0, c * np.sqrt(np.pi / 2.0), upper.size)
+    raw = rng.normal(0.0, 1.0, upper.size)
+    k = np.exp(-0.5 * (np.arange(-12, 13) / 4.0) ** 2)
+    corr = np.convolve(raw, k / k.sum(), mode="same")
+    corr -= corr.mean()
+    corr *= c / np.mean(np.abs(corr))
+    rough = upper - corr
 
     ax.set_xlim(0, 1)
     ax.set_ylim(0, 1)
@@ -190,14 +199,10 @@ def zoom_cell(ax, sem: np.ndarray, gt: np.ndarray) -> None:
     xs = np.linspace(0.0, 1.0, upper.size)
     halo = [pe.withStroke(linewidth=2.4, foreground="black")]
     BLUE = "#4F7BF0"
-    # the rough field is i.i.d.; at one draw per column its zigzag outruns
-    # print resolution, so draw it sampled every third column
-    step = 3
     ax.plot(xs, ty(upper), color=CYAN, lw=1.25, zorder=4, path_effects=halo)
     ax.plot(xs, ty(upper - c), color=RED_CALLOUT, lw=1.15, zorder=4,
             path_effects=halo)
-    ax.plot(xs[::step], ty(rough[::step]), color=BLUE, lw=1.15, zorder=3,
-            path_effects=halo)
+    ax.plot(xs, ty(rough), color=BLUE, lw=1.2, zorder=3, path_effects=halo)
 
     ax.text(0.03, 0.965, "equal-$\\overline{|\\delta|}$ edge fields (controlled)",
             fontsize=6.6, fontweight="bold", va="top")

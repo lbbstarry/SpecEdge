@@ -58,16 +58,18 @@ def load_binary(path: Path, size: int = 1024) -> np.ndarray:
 
 def cell(ax, sem, pred, gt, note=None, note_red=False) -> None:
     ax.imshow(sem, cmap="gray", vmin=0, vmax=255, interpolation="bilinear")
+    # translucent mask fills: cyan = agreed foreground (the reference mask
+    # itself in the reference column), red / orange = the disagreement
     if pred is not None:
-        for mask, color in ((pred & ~gt, RED_CALLOUT), (gt & ~pred, ORANGE)):
-            if mask.any():
-                rgba = np.zeros((*mask.shape, 4))
-                rgba[mask] = matplotlib.colors.to_rgba(color, alpha=0.5)
-                ax.imshow(rgba, interpolation="nearest")
-    boundary = gt ^ ndi.binary_erosion(gt, iterations=2)
-    rgba = np.zeros((*boundary.shape, 4))
-    rgba[boundary] = matplotlib.colors.to_rgba(CYAN, alpha=0.9)
-    ax.imshow(rgba, interpolation="nearest")
+        overlays = ((pred & gt, CYAN, 0.32), (pred & ~gt, RED_CALLOUT, 0.5),
+                    (gt & ~pred, ORANGE, 0.5))
+    else:
+        overlays = ((gt, CYAN, 0.32),)
+    for mask, color, alpha in overlays:
+        if mask.any():
+            rgba = np.zeros((*mask.shape, 4))
+            rgba[mask] = matplotlib.colors.to_rgba(color, alpha=alpha)
+            ax.imshow(rgba, interpolation="nearest")
     ax.set_xticks([])
     ax.set_yticks([])
     for s in ax.spines.values():
@@ -119,11 +121,12 @@ def main() -> None:
                              pad=4)
 
     handles = [
+        plt.Line2D([], [], marker="s", ls="", mfc=CYAN, mec="none",
+                   ms=5, label=r"agreed foreground (pred $\cap$ ref)"),
         plt.Line2D([], [], marker="s", ls="", mfc=RED_CALLOUT, mec="none",
-                   ms=5, label=r"spurious foreground (pred $\setminus$ ref)"),
+                   ms=5, label=r"spurious (pred $\setminus$ ref)"),
         plt.Line2D([], [], marker="s", ls="", mfc=ORANGE, mec="none",
-                   ms=5, label=r"missed foreground (ref $\setminus$ pred)"),
-        plt.Line2D([], [], color=CYAN, lw=1.4, label="reference boundary"),
+                   ms=5, label=r"missed (ref $\setminus$ pred)"),
     ]
     fig.legend(handles=handles, loc="lower center", ncol=3, fontsize=6,
                bbox_to_anchor=(0.53, -0.035), handletextpad=0.4,
