@@ -117,11 +117,13 @@ def panel_a(fig, gs_hero) -> None:
     segf = load_binary(ROOT / "output/hard_eval/segformer/preds/masks" / f"{SAMPLE}.png")
     hrnet = load_binary(ROOT / "output/hard_eval/hrnet/preds/masks" / f"{SAMPLE}.png")
 
+    # the in-distribution IoUs are qualification scores, so say so on the tile
     cells = [
-        (None, "SEM input", "out-of-window · fg 0.11", "white"),
         (otsu, "Threshold (industry)", "misses the line · IoU 0.14", "#FFB4AE"),
-        (segf, "SegFormer · IoU 0.986", "hallucination · CD err 48.2 px", "#FFB4AE"),
-        (hrnet, "HRNet · IoU 0.984", "accurate · CD err 0.07 px", "#A8E6B8"),
+        (segf, "SegFormer · in-dist IoU 0.986", "hallucination · CD err 48.2 px",
+         "#FFB4AE"),
+        (hrnet, "HRNet · in-dist IoU 0.984", "accurate · CD err 0.07 px",
+         "#A8E6B8"),
     ]
     axes = []
     inner = gridspec.GridSpecFromSubplotSpec(1, 4, subplot_spec=gs_hero,
@@ -130,6 +132,7 @@ def panel_a(fig, gs_hero) -> None:
         ax = fig.add_subplot(inner[i])
         plate_cell(ax, sem, pred, gt, label, verdict, vc)
         axes.append(ax)
+    zoom_cell(fig.add_subplot(inner[3]), sem, gt)
 
     # scale bar on the first cell (pixel units; nm calibration pending)
     axes[0].plot([1024 - 60 - 200, 1024 - 60], [1024 - 55, 1024 - 55],
@@ -148,6 +151,60 @@ def panel_a(fig, gs_hero) -> None:
     axes[0].legend(handles=handles, loc="upper left",
                    bbox_to_anchor=(0.0, -0.015), fontsize=6, ncol=3,
                    handletextpad=0.4, columnspacing=1.0, borderaxespad=0.0)
+
+
+def zoom_cell(ax, sem: np.ndarray, gt: np.ndarray) -> None:
+    """Edge-level view of the paper's thesis: two displacement fields with the
+    same L1 norm, drawn on this sample's upper edge. Overlap cannot separate
+    them; CD and LER read them oppositely. The printed numbers are the c = 3
+    population values of the controlled test (E23), not per-strip estimates."""
+    e23 = json.load(open(ROOT / "output/revision_v4/e23_mechanism/summary.json"))
+    arms = e23["by_c"]["3.0"]["arms"]
+    d_iou = e23["by_c"]["3.0"]["iou_spread_across_arms"]
+    cd_const = arms["constant"]["cd_err_mean"]
+    cd_rough = arms["gaussian"]["cd_err_mean"]
+    ler_up = arms["gaussian"]["ler_pert_mean"] - arms["gaussian"]["ler_ref_mean"]
+
+    # metrology grid is 512; work there so 1 drawn px = 1 reported px
+    g = np.asarray(Image.fromarray(gt).resize((512, 512), Image.NEAREST)) > 0
+    s = np.asarray(Image.fromarray(sem).convert("L").resize((512, 512)))
+    x0, x1 = 150, 362
+    band = np.where(g[:, x0:x1].mean(1) > 0.5)[0]
+    upper = np.array([np.where(g[:, x])[0].min() for x in range(x0, x1)], float)
+    r0, r1 = int(band.min()) - 16, int(band.min()) + 13  # strip around the edge
+    c = 3.0
+    rng = np.random.default_rng(0)
+    rough = upper - rng.normal(0.0, c * np.sqrt(np.pi / 2.0), upper.size)
+
+    ax.set_xlim(0, 1)
+    ax.set_ylim(0, 1)
+    ax.axis("off")
+    # strip occupies the middle of the tile; map (x, row) into axes coords
+    SY0, SY1 = 0.24, 0.80
+    ax.imshow(s[r0:r1 + 1, x0:x1], cmap="gray", vmin=0, vmax=255,
+              extent=(0.0, 1.0, SY0, SY1), aspect="auto",
+              interpolation="nearest", zorder=1)
+    def ty(rows):  # image row -> axes y
+        return SY1 - (np.asarray(rows) - r0) / (r1 - r0) * (SY1 - SY0)
+    xs = np.linspace(0.0, 1.0, upper.size)
+    ax.plot(xs, ty(upper), color=CYAN, lw=1.1, zorder=3)
+    ax.plot(xs, ty(upper - c), color=RED_CALLOUT, lw=1.0, zorder=3)
+    ax.plot(xs, ty(rough), color="#5B7FBF", lw=0.7, alpha=0.95, zorder=2)
+
+    ax.text(0.03, 0.965, "equal-$|\\delta|$ edge fields (controlled)",
+            fontsize=6.6, fontweight="bold", va="top")
+    ax.text(0.97, 0.845, f"one edge, zoomed · same IoU "
+            f"($\\Delta \\leq {d_iou:.3f}$)", fontsize=5.6,
+            color=NEUTRAL_MID, ha="right", va="bottom")
+    ax.text(0.03, 0.175,
+            f"offset $+c$: CD err {cd_const:.1f} px · LER unchanged",
+            fontsize=5.9, color=RED_CALLOUT, va="top")
+    ax.text(0.03, 0.075,
+            f"rough, same $|\\delta|$: CD err {cd_rough:.1f} px · "
+            f"LER $+{ler_up:.1f}$ px",
+            fontsize=5.9, color="#5B7FBF", va="top")
+    ax.text(0.03, ty(upper[0]) + 0.035, "reference", fontsize=5.4, color=CYAN,
+            va="bottom")
 
 
 def panel_b(ax) -> None:
@@ -362,8 +419,8 @@ def main() -> None:
                            left=0.075, right=0.985, top=0.935, bottom=0.105)
     panel_a(fig, gs[0, :])
     fig.text(0.075, 0.962,
-             "(a) Two frontends that are equivalent in distribution, on one "
-             "out-of-window sample",
+             "(a) One out-of-window sample, and the equal-IoU ambiguity "
+             "that defeats overlap in principle",
              fontsize=7.5, fontweight="bold")
 
     panel_b(fig.add_subplot(gs[1, 0:6]))
