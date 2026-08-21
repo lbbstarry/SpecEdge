@@ -29,6 +29,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from matplotlib import gridspec
+from matplotlib import patheffects as pe
 from matplotlib.patches import FancyBboxPatch
 from PIL import Image
 from scipy import ndimage as ndi
@@ -187,11 +188,18 @@ def zoom_cell(ax, sem: np.ndarray, gt: np.ndarray) -> None:
     def ty(rows):  # image row -> axes y
         return SY1 - (np.asarray(rows) - r0) / (r1 - r0) * (SY1 - SY0)
     xs = np.linspace(0.0, 1.0, upper.size)
-    ax.plot(xs, ty(upper), color=CYAN, lw=1.1, zorder=3)
-    ax.plot(xs, ty(upper - c), color=RED_CALLOUT, lw=1.0, zorder=3)
-    ax.plot(xs, ty(rough), color="#5B7FBF", lw=0.7, alpha=0.95, zorder=2)
+    halo = [pe.withStroke(linewidth=2.4, foreground="black")]
+    BLUE = "#4F7BF0"
+    # the rough field is i.i.d.; at one draw per column its zigzag outruns
+    # print resolution, so draw it sampled every third column
+    step = 3
+    ax.plot(xs, ty(upper), color=CYAN, lw=1.25, zorder=4, path_effects=halo)
+    ax.plot(xs, ty(upper - c), color=RED_CALLOUT, lw=1.15, zorder=4,
+            path_effects=halo)
+    ax.plot(xs[::step], ty(rough[::step]), color=BLUE, lw=1.15, zorder=3,
+            path_effects=halo)
 
-    ax.text(0.03, 0.965, "equal-$|\\delta|$ edge fields (controlled)",
+    ax.text(0.03, 0.965, "equal-$\\overline{|\\delta|}$ edge fields (controlled)",
             fontsize=6.6, fontweight="bold", va="top")
     ax.text(0.97, 0.845, f"one edge, zoomed · same IoU "
             f"($\\Delta \\leq {d_iou:.3f}$)", fontsize=5.6,
@@ -200,11 +208,17 @@ def zoom_cell(ax, sem: np.ndarray, gt: np.ndarray) -> None:
             f"offset $+c$: CD err {cd_const:.1f} px · LER unchanged",
             fontsize=5.9, color=RED_CALLOUT, va="top")
     ax.text(0.03, 0.075,
-            f"rough, same $|\\delta|$: CD err {cd_rough:.1f} px · "
+            f"rough, same $\\overline{{|\\delta|}}$: CD err {cd_rough:.1f} px · "
             f"LER $+{ler_up:.1f}$ px",
-            fontsize=5.9, color="#5B7FBF", va="top")
-    ax.text(0.03, ty(upper[0]) + 0.035, "reference", fontsize=5.4, color=CYAN,
-            va="bottom")
+            fontsize=5.9, color=BLUE, va="top")
+    # name the curves where they run, so the mapping needs no legend
+    ax.text(0.03, ty(upper[0] + 3.5), "reference", fontsize=5.6, color=CYAN,
+            va="top", path_effects=halo, zorder=5)
+    ax.text(0.97, ty(upper[-1] - c - 1.5), "offset $+c$", fontsize=5.6,
+            color=RED_CALLOUT, ha="right", va="bottom", path_effects=halo,
+            zorder=5)
+    ax.text(0.30, SY0 + 0.030, "rough", fontsize=5.6, color=BLUE,
+            ha="center", va="bottom", path_effects=halo, zorder=5)
 
 
 def panel_b(ax) -> None:
@@ -419,8 +433,8 @@ def main() -> None:
                            left=0.075, right=0.985, top=0.935, bottom=0.105)
     panel_a(fig, gs[0, :])
     fig.text(0.075, 0.962,
-             "(a) One out-of-window sample, and the equal-IoU ambiguity "
-             "that defeats overlap in principle",
+             "(a) Two failure modes: hallucination the eye can catch "
+             "(left), and equal-IoU edge fields it cannot (right)",
              fontsize=7.5, fontweight="bold")
 
     panel_b(fig.add_subplot(gs[1, 0:6]))
