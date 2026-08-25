@@ -97,7 +97,7 @@ def plate_cell(ax, sem, pred, gt, label, verdict, verdict_color) -> None:
         if mask.any():
             rgba = np.zeros((*mask.shape, 4))
             rgba[mask] = matplotlib.colors.to_rgba(color, alpha=alpha)
-            ax.imshow(rgba, interpolation="nearest")
+            ax.imshow(rgba, interpolation="bilinear")
     ax.set_xticks([])
     ax.set_yticks([])
     for s in ax.spines.values():
@@ -109,13 +109,17 @@ def plate_cell(ax, sem, pred, gt, label, verdict, verdict_color) -> None:
 
 
 def panel_a(fig, gs_hero) -> None:
+    # Compare on the 512 metrology grid: predictions are native 512, and
+    # upsampling them against the 1024 reference manufactures 1-2 px fringe
+    # disagreement along every edge that the extractor never sees.
     sem = np.asarray(
-        Image.open(ROOT / "dataset/litho_hard/images/hard" / f"{SAMPLE}.png").convert("L"))
-    gt = load_binary(ROOT / "dataset/litho_hard/masks/hard" / f"{SAMPLE}.png")
+        Image.open(ROOT / "dataset/litho_hard/images/hard" / f"{SAMPLE}.png")
+        .convert("L").resize((512, 512), Image.BILINEAR))
+    gt = load_binary(ROOT / "dataset/litho_hard/masks/hard" / f"{SAMPLE}.png", 512)
     otsu = load_binary(
-        ROOT / "output/revision_v4/e11_classical/otsu/preds/masks/extreme_hard" / f"{SAMPLE}.png")
-    segf = load_binary(ROOT / "output/hard_eval/segformer/preds/masks" / f"{SAMPLE}.png")
-    hrnet = load_binary(ROOT / "output/hard_eval/hrnet/preds/masks" / f"{SAMPLE}.png")
+        ROOT / "output/revision_v4/e11_classical/otsu/preds/masks/extreme_hard" / f"{SAMPLE}.png", 512)
+    segf = load_binary(ROOT / "output/hard_eval/segformer/preds/masks" / f"{SAMPLE}.png", 512)
+    hrnet = load_binary(ROOT / "output/hard_eval/hrnet/preds/masks" / f"{SAMPLE}.png", 512)
 
     # the in-distribution IoUs are qualification scores, so say so on the tile
     cells = [
@@ -135,9 +139,9 @@ def panel_a(fig, gs_hero) -> None:
     zoom_cell(fig.add_subplot(inner[3]), sem, gt)
 
     # scale bar on the first cell (pixel units; nm calibration pending)
-    axes[0].plot([1024 - 60 - 200, 1024 - 60], [1024 - 55, 1024 - 55],
+    axes[0].plot([512 - 30 - 100, 512 - 30], [512 - 28, 512 - 28],
                  color="white", lw=1.6)
-    axes[0].text(1024 - 60 - 100, 1024 - 85, "200 px", color="white",
+    axes[0].text(512 - 30 - 50, 512 - 42, "100 px", color="white",
                  fontsize=5.5, ha="center", va="bottom")
 
     # shared overlay legend under the strip
@@ -166,9 +170,8 @@ def zoom_cell(ax, sem: np.ndarray, gt: np.ndarray) -> None:
     cd_rough = arms["gaussian"]["cd_err_mean"]
     ler_up = arms["gaussian"]["ler_pert_mean"] - arms["gaussian"]["ler_ref_mean"]
 
-    # metrology grid is 512; work there so 1 drawn px = 1 reported px
-    g = np.asarray(Image.fromarray(gt).resize((512, 512), Image.NEAREST)) > 0
-    s = np.asarray(Image.fromarray(sem).convert("L").resize((512, 512)))
+    # panel_a already works on the 512 metrology grid
+    g, s = gt, sem
     x0, x1 = 150, 362
     band = np.where(g[:, x0:x1].mean(1) > 0.5)[0]
     upper = np.array([np.where(g[:, x])[0].min() for x in range(x0, x1)], float)
@@ -197,7 +200,7 @@ def zoom_cell(ax, sem: np.ndarray, gt: np.ndarray) -> None:
     def ty(rows):  # image row -> axes y
         return SY1 - (np.asarray(rows) - r0) / (r1 - r0) * (SY1 - SY0)
     xs = np.linspace(0.0, 1.0, upper.size)
-    halo = [pe.withStroke(linewidth=2.4, foreground="black")]
+    halo = [pe.withStroke(linewidth=1.9, foreground="black")]
     BLUE = "#4F7BF0"
     ax.plot(xs, ty(upper), color=CYAN, lw=1.25, zorder=4, path_effects=halo)
     ax.plot(xs, ty(upper - c), color=RED_CALLOUT, lw=1.15, zorder=4,

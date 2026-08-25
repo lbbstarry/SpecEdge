@@ -69,7 +69,7 @@ def cell(ax, sem, pred, gt, note=None, note_red=False) -> None:
         if mask.any():
             rgba = np.zeros((*mask.shape, 4))
             rgba[mask] = matplotlib.colors.to_rgba(color, alpha=alpha)
-            ax.imshow(rgba, interpolation="nearest")
+            ax.imshow(rgba, interpolation="bilinear")
     ax.set_xticks([])
     ax.set_yticks([])
     for s in ax.spines.values():
@@ -97,9 +97,11 @@ def main() -> None:
                            left=0.055, right=0.995, top=0.905, bottom=0.055)
 
     for ri, sid in enumerate(SAMPLES):
+        # 512 metrology grid, matching the predictions' native resolution
         sem = np.asarray(Image.open(
-            ROOT / "dataset/litho_hard/images/hard" / f"{sid}.png").convert("L"))
-        gt = load_binary(ROOT / "dataset/litho_hard/masks/hard" / f"{sid}.png")
+            ROOT / "dataset/litho_hard/images/hard" / f"{sid}.png")
+            .convert("L").resize((512, 512), Image.BILINEAR))
+        gt = load_binary(ROOT / "dataset/litho_hard/masks/hard" / f"{sid}.png", 512)
 
         ax0 = fig.add_subplot(gs[ri, 0])
         cell(ax0, sem, None, gt)
@@ -111,7 +113,7 @@ def main() -> None:
 
         for ci, m in enumerate(MODELS, start=1):
             pred = load_binary(
-                ROOT / "output/hard_eval" / m / "preds/masks" / f"{sid}.png")
+                ROOT / "output/hard_eval" / m / "preds/masks" / f"{sid}.png", 512)
             ax = fig.add_subplot(gs[ri, ci])
             e = errs[(m, sid)]
             cell(ax, sem, pred, gt,
