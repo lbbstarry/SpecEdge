@@ -1,0 +1,19 @@
+{
+  "extreme": {
+    "n": 248,
+    "spearman_d_fg": 0.4809,
+    "spearman_d_cc": 0.2745,
+    "spearman_fg_cc": 0.2459
+  },
+  "pooled": {
+    "n": 488,
+    "spearman_d_fg": 0.6444,
+    "spearman_d_cc": 0.3228,
+    "spearman_fg_cc": 0.3212
+  },
+  "cc_dev_extreme": {
+    "n": 248,
+    "n_distinct": 4,
+    "max_tie_frac": 0.8669
+  }
+}

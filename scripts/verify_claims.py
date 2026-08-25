@@ -142,6 +142,22 @@ CLAIMS: list[tuple[str, str, str, str, str]] = [
     ("4", "VII-C", "e15_guard_dfm/summary.json", "routed.p95_unet.wrong",
      "wrong calls after routing to U-Net, the best retrospective choice"),
 
+    # --- Budgeted-routing formulation premises (E25) --------------------
+    ("0.48", "VIII", "e25_formulation_stats/summary.json",
+     "extreme.spearman_d_fg", "Spearman(d, fg_dev) on Extreme"),
+    ("0.27", "VIII", "e25_formulation_stats/summary.json",
+     "extreme.spearman_d_cc", "Spearman(d, cc_dev) on Extreme"),
+    ("0.25", "VIII", "e25_formulation_stats/summary.json",
+     "extreme.spearman_fg_cc", "Spearman(fg_dev, cc_dev) on Extreme"),
+    ("0.64", "VIII", "e25_formulation_stats/summary.json",
+     "pooled.spearman_d_fg", "largest pooled pairwise Spearman"),
+    ("4", "VIII", "e25_formulation_stats/summary.json",
+     "cc_dev_extreme.n_distinct",
+     "distinct cc_dev values on the Extreme records"),
+    ("0.87", "VIII", "e25_formulation_stats/summary.json",
+     "cc_dev_extreme.max_tie_frac",
+     "largest cc_dev tie block, printed as 87%"),
+
     # --- Section VIII-G, policy comparison (E22) ------------------------
     ("0.470", "VIII-G", "e22_policy/summary.json",
      "cd_error.deeplabv3plus.extreme.always_fallback.mean",

@@ -1,7 +1,7 @@
 # SpecEdge
 
-Code for **"Overlap Metrics Do Not Predict Measurement Reliability: Qualifying and
-Monitoring Segmentation for SEM Metrology."**
+Code for **"Trustworthy Deep Segmentation for Lithography SEM Metrology:
+Out-of-Window Qualification and a Reference-Free Runtime Guard."**
 
 Lithography metrology reads critical dimension (CD) and edge roughness off contours
 that threshold operators extract from SEM images. At advanced nodes those operators
