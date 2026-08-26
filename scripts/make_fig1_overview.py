@@ -449,7 +449,7 @@ def main() -> None:
     panel_c(fig.add_subplot(gs[1, 6:12]))
 
     OUT.parent.mkdir(parents=True, exist_ok=True)
-    for ext, kw in (("svg", {}), ("pdf", {}), ("png", {"dpi": 300})):
+    for ext, kw in (("svg", {}), ("pdf", {"dpi": 600}), ("png", {"dpi": 300})):
         fig.savefig(f"{OUT}.{ext}", **kw)
         print(f"wrote {OUT}.{ext}")
 
