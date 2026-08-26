@@ -86,6 +86,34 @@ def load_binary(path: Path, size: int = 1024) -> np.ndarray:
     return np.asarray(img) > 127
 
 
+def edge_inset(ax, sem, pred, gt, win, label=False) -> None:
+    """Corner magnifier over `win` in the tile's own overlay grammar, marked
+    on the parent with a connector box (the Fig. 2 zoom idiom)."""
+    r0, r1, c0, c1 = win
+    axins = ax.inset_axes([0.56, 0.48, 0.42, 0.42])
+    axins.imshow(sem, cmap="gray", vmin=0, vmax=255, interpolation="bilinear")
+    for mask, color, alpha in ((pred & gt, CYAN, 0.32),
+                               (pred & ~gt, RED_CALLOUT, 0.5),
+                               (gt & ~pred, ORANGE, 0.5)):
+        if mask.any():
+            rgba = np.zeros((*mask.shape, 4))
+            rgba[mask] = matplotlib.colors.to_rgba(color, alpha=alpha)
+            axins.imshow(rgba, interpolation="bilinear")
+    axins.set_xlim(c0, c1)
+    axins.set_ylim(r1, r0)
+    axins.set_xticks([])
+    axins.set_yticks([])
+    for s in axins.spines.values():
+        s.set_visible(True)
+        s.set_color("white")
+        s.set_linewidth(0.7)
+    ax.indicate_inset_zoom(axins, edgecolor="white", linewidth=0.6, alpha=0.9)
+    if label:
+        axins.text(0.95, 0.06, f"{0.42 * gt.shape[1] / (c1 - c0):.0f}$\\times$",
+                   transform=axins.transAxes, fontsize=5, color="white",
+                   ha="right", va="bottom")
+
+
 def plate_cell(ax, sem, pred, gt, label, verdict, verdict_color) -> None:
     """One hero cell: SEM + overlays + on-plate labels (Pattern 13)."""
     ax.imshow(sem, cmap="gray", vmin=0, vmax=255, interpolation="bilinear")
@@ -129,12 +157,19 @@ def panel_a(fig, gs_hero) -> None:
         (hrnet, "HRNet · in-dist IoU 0.984", "accurate · CD err 0.07 px",
          "#A8E6B8"),
     ]
+    # fixed zoom window on the reference upper edge at the tile centre, the
+    # same window for all three tiles so the edge treatment is comparable
+    col = 256
+    r_edge = int(np.where(gt[:, col])[0].min())
+    win = (r_edge - 40, r_edge + 40, col - 40, col + 40)
+
     axes = []
     inner = gridspec.GridSpecFromSubplotSpec(1, 4, subplot_spec=gs_hero,
                                              wspace=0.045)
     for i, (pred, label, verdict, vc) in enumerate(cells):
         ax = fig.add_subplot(inner[i])
         plate_cell(ax, sem, pred, gt, label, verdict, vc)
+        edge_inset(ax, sem, pred, gt, win, label=(i == 0))
         axes.append(ax)
     zoom_cell(fig.add_subplot(inner[3]), sem, gt)
 
