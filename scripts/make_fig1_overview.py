@@ -72,6 +72,8 @@ MODEL_LABELS = {
     "hrnet": "HRNet",
     "segformer": "SegFormer",
 }
+MARKERS = {"unet": "o", "deeplabv3plus": "s", "hrnet": "^", "segformer": "D"}
+TEAL = "#42949E"  # guard / routing accent (nature-figure skill accent set)
 
 
 def norm_name(x: object) -> str:
@@ -290,12 +292,10 @@ def panel_b(ax) -> None:
             ax.axvspan(lo, hi, color=BG_AQUA, zorder=0)
     # distinct markers as well as colours: the three CNN blues are close in
     # value, and at print size hue alone does not separate them
-    markers = {"unet": "o", "deeplabv3plus": "s", "hrnet": "^",
-               "segformer": "D"}
     for model in MODEL_COLORS:  # family order; SegFormer drawn last, on top
         sub = df[df["model"] == model]
         ax.scatter(sub["iou"], sub["cd"], s=7, c=MODEL_COLORS[model],
-                   marker=markers[model], label=MODEL_LABELS[model],
+                   marker=MARKERS[model], label=MODEL_LABELS[model],
                    alpha=0.8, linewidths=0)
 
     # one p5-p95 bar per bin, with the ratio the text quotes printed above it
@@ -318,12 +318,10 @@ def panel_b(ax) -> None:
             f"down to IoU {iou_min:.2f}",
             transform=ax.transAxes, fontsize=5.5, color=NEUTRAL_MID,
             va="bottom")
-    ax.text(0.985, 0.055, "bars: p5--p95 within bin", transform=ax.transAxes,
-            fontsize=5.5, color="black", ha="right", va="bottom")
     ax.set_yscale("log")
     ax.set_xlabel("per-sample IoU", fontsize=7)
     ax.set_ylabel("CD MAE (px)", fontsize=7)
-    ax.set_title("(b) IoU does not rank metrology", fontsize=7.5,
+    ax.set_title("(c) IoU does not rank metrology", fontsize=7.5,
                  fontweight="bold")
     ax.legend(fontsize=5.5, loc="upper left", handletextpad=0.1,
               borderaxespad=0.2, labelspacing=0.2, ncol=2, columnspacing=0.8)
@@ -357,20 +355,20 @@ def panel_c(ax) -> None:
     s9 = ext[ext["key"] == SAMPLE]
     ax.scatter(s9["gt_foreground_ratio"], s9["abs_err_cd_mean"], marker="*",
                s=85, c=RED_STRONG, edgecolors="black", linewidths=0.5, zorder=5)
-    ax.annotate("sample (a)", (float(s9["gt_foreground_ratio"].iloc[0]),
+    ax.annotate("sample (b)", (float(s9["gt_foreground_ratio"].iloc[0]),
                                float(s9["abs_err_cd_mean"].iloc[0])),
                 textcoords="offset points", xytext=(6, -2), fontsize=6)
     # horizontal, above the band: rotated inside the shading it was unreadable
     ax.set_yscale("log")
     ax.set_ylim(top=ax.get_ylim()[1] * 12)
-    ax.text(bp, 0.975, f"breakpoint {bp:.2f} [{ci[0]:.2f}, {ci[1]:.2f}]",
-            transform=ax.get_xaxis_transform(), fontsize=6, color=ORANGE,
+    ax.text(bp, 0.975, f"breakpoint {bp:.2f}\n[{ci[0]:.2f}, {ci[1]:.2f}]",
+            transform=ax.get_xaxis_transform(), fontsize=5.8, color=ORANGE,
             ha="center", va="top")
     ax.text(0.745, tau * 1.5, "$\\tau_\\sigma$ = 2.65 px", fontsize=6,
             color=NEUTRAL_MID, ha="right")
     ax.set_xlabel("foreground ratio", fontsize=7)
     ax.set_ylabel("SegFormer CD MAE (px)", fontsize=7)
-    ax.set_title("(c) Collapse: OOD × low fg", fontsize=7.5, fontweight="bold")
+    ax.set_title("(d) Collapse: OOD × low fg", fontsize=7.5, fontweight="bold")
     ax.legend(fontsize=5.5, loc="upper right", handletextpad=0.1,
               labelspacing=0.2)
     ax.tick_params(labelsize=6)
@@ -418,70 +416,172 @@ def panel_d(ax) -> None:
 
 
 def panel_loop(ax) -> None:
-    """Design-manufacturing loop, marking the learned stage as the one that
-    carries no run-time check."""
+    """Row (a): the design-to-silicon chain with the learned stage marked and
+    the two mechanisms this paper adds --- out-of-window qualification on the
+    frontend, a reference-free guard beneath it --- each pointing at the
+    evidence panel that carries it."""
     ax.set_xlim(0, 100)
-    ax.set_ylim(0, 25)
+    ax.set_ylim(0, 28)
     ax.axis("off")
 
     stages = [
         (2.0, "Layout\n(design intent)", BASE_MID),
-        (21.0, "Litho\n+ SEM", BASE_MID),
+        (21.0, "Litho\n+ SEM image", BASE_MID),
         (40.0, "Segmentation\nfrontend", RED_STRONG),
-        (59.0, "Metrology\nCD / LWR / LER", BASE_MID),
+        (59.0, "Metrology\nCD · LWR · LER", BASE_MID),
         (78.0, "Design decision\nPW · topology", BASE_MID),
     ]
-    w, h, y = 18.0, 9.0, 12.5
+    w, h, y = 18.0, 10.0, 15.0
     for x, label, color in stages:
         learned = color == RED_STRONG
         ax.add_patch(FancyBboxPatch(
             (x, y), w, h, boxstyle="round,pad=0.35,rounding_size=1.1",
-            linewidth=1.6 if learned else 0.9,
+            linewidth=1.5 if learned else 0.9,
             edgecolor=color, facecolor="white" if learned else "#F4F6FB",
             zorder=3))
         ax.text(x + w / 2, y + h / 2, label, ha="center", va="center",
-                fontsize=6.2, color=color if learned else "#303030",
+                fontsize=6.0, color=color if learned else "#303030",
                 fontweight="bold" if learned else "normal", zorder=4)
-
     for x, _, _ in stages[:-1]:
         ax.annotate("", xy=(x + w + 0.9, y + h / 2),
                     xytext=(x + w + 0.1, y + h / 2),
                     arrowprops=dict(arrowstyle="-|>", lw=0.9, color=NEUTRAL_MID))
 
-    # Feedback edge as an explicit three-segment routing below the chain, so
-    # it never crosses a box and its curvature does not depend on the renderer.
-    x_from, x_to, y_bus = 78.0 + w / 2, 2.0 + w / 2, 5.2
-    ax.plot([x_from, x_from, x_to], [y - 0.3, y_bus, y_bus],
-            color=NEUTRAL_MID, lw=1.0, linestyle=(0, (4, 2)),
-            solid_capstyle="butt", zorder=2)
-    ax.annotate("", xy=(x_to, y - 0.3), xytext=(x_to, y_bus),
-                arrowprops=dict(arrowstyle="-|>", lw=1.0, color=NEUTRAL_MID,
-                                linestyle=(0, (4, 2)), shrinkA=0, shrinkB=0))
-    ax.text((x_from + x_to) / 2, y_bus - 1.0,
-            "margin, model calibration, disposition",
-            ha="center", va="top", fontsize=5.8, color=NEUTRAL_MID,
-            style="italic")
-
-    ax.text(40.0 + w / 2, y + h + 1.4,
+    # what fails, and which panels show it, hangs off the learned stage
+    ax.text(40.0 + w / 2, y + h + 1.2,
             "trained model, no reference at run time",
             ha="center", va="bottom", fontsize=5.8, color=RED_STRONG)
+    ax.text(40.0 - 1.2, y - 2.0, "fails out of window (b–d)",
+            ha="right", va="top", fontsize=5.4, color=NEUTRAL_MID)
+    ax.text(78.0 + w / 2, y - 2.0, "the ordering inverts (e)",
+            ha="center", va="top", fontsize=5.4, color=NEUTRAL_MID)
+
+    # the guard, hooked between the frontends and the metrology they feed
+    gx, gy, gw, gh = 40.0, 1.2, 38.0, 6.6
+    ax.add_patch(FancyBboxPatch(
+        (gx, gy), gw, gh, boxstyle="round,pad=0.35,rounding_size=1.1",
+        linewidth=1.2, edgecolor=TEAL, facecolor="white",
+        linestyle=(0, (4, 2)), zorder=3))
+    ax.text(gx + gw / 2, gy + gh / 2,
+            "runtime guard: cross-frontend disagreement — "
+            "flag & reroute, no reference (f)",
+            ha="center", va="center", fontsize=5.5, color=TEAL, zorder=4)
+    ax.annotate("", xy=(49.0, gy + gh + 0.2), xytext=(49.0, y - 0.2),
+                arrowprops=dict(arrowstyle="-|>", lw=0.9, color=TEAL,
+                                linestyle=(0, (4, 2)), shrinkA=0, shrinkB=0))
+    ax.annotate("", xy=(68.0, y - 0.2), xytext=(68.0, gy + gh + 0.2),
+                arrowprops=dict(arrowstyle="-|>", lw=0.9, color=TEAL,
+                                linestyle=(0, (4, 2)), shrinkA=0, shrinkB=0))
+
+
+def panel_e(ax) -> None:
+    """The decision inverts: Extreme overlap does not rank the wrong-call
+    count the masks exist to prevent (Sec. VII). Four points, one per
+    frontend, directly labelled."""
+    ver = json.load(open(
+        ROOT / "output/revision_v4/e13_layout_dfm/summary.json"))["frontends"]
+    pts = {}
+    for m in MODEL_COLORS:
+        iou = json.load(open(
+            ROOT / f"output/hard_eval/{m}_eval.json"))["summary"]["iou"]
+        pts[m] = (iou, ver[m]["wrong_calls"])
+        ax.scatter([iou], [ver[m]["wrong_calls"]], s=26, c=MODEL_COLORS[m],
+                   marker=MARKERS[m], zorder=4)
+    off = {"unet": (-3, 4), "deeplabv3plus": (5, -8),
+           "hrnet": (5, 3), "segformer": (5, -2)}
+    ha = {"unet": "right", "deeplabv3plus": "left",
+          "hrnet": "left", "segformer": "left"}
+    for m, (x, y) in pts.items():
+        ax.annotate(MODEL_LABELS[m], (x, y), textcoords="offset points",
+                    xytext=off[m], fontsize=5.6, ha=ha[m], color="#404040")
+    # the pair the abstract quotes: higher overlap, almost twice the wrong calls
+    (xu, yu), (xd, yd) = pts["unet"], pts["deeplabv3plus"]
+    ax.annotate("", xy=(xu, yu - 0.35), xytext=(xd, yd + 0.35),
+                arrowprops=dict(arrowstyle="-|>", lw=0.9, color="black"))
+    ax.text((xu + xd) / 2 - 0.004, (yu + yd) / 2,
+            "higher IoU,\n$11$ vs $6$\nwrong calls", fontsize=5.6,
+            ha="right", va="center")
+    ax.text(0.03, 0.045, "$n=65$; no pair separable\n(McNemar, Holm)",
+            transform=ax.transAxes, fontsize=5.2, color=NEUTRAL_MID,
+            va="bottom")
+    ax.set_xlim(0.925, 0.99)
+    ax.set_ylim(4.5, 14.5)
+    ax.set_xticks([0.93, 0.95, 0.97, 0.99])
+    ax.set_xlabel("Extreme IoU", fontsize=7)
+    ax.set_ylabel("wrong design calls", fontsize=7)
+    ax.set_title("(e) The decision inverts", fontsize=7.5, fontweight="bold")
+    ax.tick_params(labelsize=6)
+    ax.spines["top"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+
+
+def panel_f(ax) -> None:
+    """The guard's payoff: worst-case Extreme CD error per deployment policy
+    (Sec. VI-E). Every guarded pairing caps the tail at the same value, below
+    any fixed frontend --- without knowing which frontend to trust."""
+    pol = json.load(open(
+        ROOT / "output/revision_v4/e22_policy/summary.json"))["cd_error"]
+    fbs = ["unet", "deeplabv3plus", "hrnet"]
+    seg_max = pol["hrnet"]["extreme"]["always_monitored"]["max"]
+    routed_max = max(pol[m]["extreme"]["routed"]["max"] for m in fbs)
+    rows = [("SegFormer", seg_max, RED_STRONG)]
+    rows += [(MODEL_LABELS[m],
+              pol[m]["extreme"]["always_fallback"]["max"], MODEL_COLORS[m])
+             for m in fbs]
+    rows.append(("guarded", routed_max, TEAL))
+    ys = np.arange(len(rows))[::-1]
+    for yi, (label, v, color) in zip(ys, rows):
+        ax.barh(yi, v, height=0.62, color=color, alpha=0.88, zorder=3)
+        ax.text(v * 1.18, yi, f"{v:.2f}" if v < 10 else f"{v:.1f}",
+                fontsize=5.8, va="center", zorder=4)
+    ax.text(routed_max * 3.4, ys[-1],
+            "every pairing, below\nany fixed frontend",
+            fontsize=5.2, color=NEUTRAL_MID, va="center", zorder=4)
+    tau = 2.65
+    ax.axvline(tau, color=NEUTRAL_MID, lw=0.9, ls=":", zorder=2)
+    ax.text(tau * 1.12, -0.62, "$\\tau_\\sigma$", fontsize=5.6,
+            color=NEUTRAL_MID, ha="left", va="center")
+    ax.set_xscale("log")
+    ax.set_xlim(0.8e-1, 1.3e2)
+    ax.set_ylim(-0.95, len(rows) - 0.45)
+    ax.set_yticks(list(ys), [r[0] for r in rows], fontsize=5.8)
+    ax.tick_params(axis="y", length=0, pad=1.5)
+    ax.set_xlabel("worst-case Extreme CD error (px)", fontsize=7)
+    ax.set_title("(f) The guard bounds the tail", fontsize=7.5,
+                 fontweight="bold")
+    ax.tick_params(labelsize=6)
+    ax.spines["top"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+    ax.spines["left"].set_visible(False)
 
 
 def main() -> None:
-    # Row (a) is width-driven: the four square tiles need ~1.57 in, so the row
-    # is sized just above that and the scatter row takes what is left.
-    fig = plt.figure(figsize=(7.16, 3.94))
-    gs = gridspec.GridSpec(2, 12, figure=fig, height_ratios=[1.32, 1.0],
-                           hspace=0.34, wspace=2.2,
-                           left=0.075, right=0.985, top=0.935, bottom=0.105)
-    panel_a(fig, gs[0, :])
-    fig.text(0.075, 0.962,
-             "(a) Two failure modes: hallucination the eye can catch "
+    # Three-row asymmetric composite (nature-figure skill): a thin system
+    # strip, the image-plate hero row, and four quantitative panels that walk
+    # the argument left to right. Row (b) is width-driven: the four square
+    # tiles set its height.
+    fig = plt.figure(figsize=(7.16, 5.15))
+    gs = gridspec.GridSpec(3, 24, figure=fig,
+                           height_ratios=[0.54, 1.42, 1.06],
+                           hspace=0.46, wspace=4.0,
+                           left=0.062, right=0.985, top=0.955, bottom=0.080)
+
+    panel_loop(fig.add_subplot(gs[0, :]))
+    fig.text(0.062, gs[0, :].get_position(fig).y1 + 0.012,
+             "(a) A trained model now sits inside the measurement chain",
+             fontsize=7.5, fontweight="bold")
+
+    panel_a(fig, gs[1, :])
+    fig.text(0.062, gs[1, :].get_position(fig).y1 + 0.010,
+             "(b) Two failure modes: hallucination the eye can catch "
              "(left), and equal-IoU edge fields it cannot (right)",
              fontsize=7.5, fontweight="bold")
 
-    panel_b(fig.add_subplot(gs[1, 0:6]))
-    panel_c(fig.add_subplot(gs[1, 6:12]))
+    panel_b(fig.add_subplot(gs[2, 0:6]))
+    panel_c(fig.add_subplot(gs[2, 6:12]))
+    panel_e(fig.add_subplot(gs[2, 12:17]))
+    panel_f(fig.add_subplot(gs[2, 18:24]))  # col 17 left empty: room for the
+    # policy labels on (f)'s own axis rather than inside (e)
 
     OUT.parent.mkdir(parents=True, exist_ok=True)
     for ext, kw in (("svg", {}), ("pdf", {"dpi": 600}), ("png", {"dpi": 300})):
