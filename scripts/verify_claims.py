@@ -241,6 +241,11 @@ CLAIMS: list[tuple[str, str, str, str, str]] = [
      "drift.mean_predicted_extreme", "mean predicted risk out of window"),
     ("0.185", "VIII-G", "e19_risk_model/calibration.json", "extreme.base_rate",
      "observed failure rate out of window"),
+    # --- Section IX, discussion: ensemble-composition sensitivity -------
+    ("0.900", "IX", "e4c_loo_guard.json", "results.17.auroc",
+     "composition-sensitivity AUROC, min over compositions (SegFormer+DeepLabV3+)"),
+    ("0.928", "IX", "e4c_loo_guard.json", "results.20.auroc",
+     "composition-sensitivity AUROC, max (SegFormer+HRNet pair)"),
 ]
 
 
