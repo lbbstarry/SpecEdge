@@ -140,7 +140,7 @@ def main() -> None:
               labelspacing=0.25)
 
     OUT.parent.mkdir(parents=True, exist_ok=True)
-    for ext, kw in (("svg", {}), ("pdf", {}), ("png", {"dpi": 300})):
+    for ext, kw in (("svg", {}), ("pdf", {"dpi": 600}), ("png", {"dpi": 300})):
         fig.savefig(f"{OUT}.{ext}", bbox_inches="tight", **kw)
         print(f"wrote {OUT}.{ext}")
 

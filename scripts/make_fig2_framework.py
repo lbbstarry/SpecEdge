@@ -204,7 +204,7 @@ def main() -> None:
     ax_e.tick_params(labelsize=5.5)
 
     OUT_PDF.parent.mkdir(parents=True, exist_ok=True)
-    fig.savefig(OUT_PDF)
+    fig.savefig(OUT_PDF, dpi=600)
     fig.savefig(OUT_PNG, dpi=300)
     print(f"CD={cd_mean:.2f}px LWR3s={lwr3:.2f}px HF={hf_ratio:.4f}")
     print(f"wrote {OUT_PDF}\nwrote {OUT_PNG}")
