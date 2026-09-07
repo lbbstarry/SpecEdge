@@ -560,27 +560,30 @@ def main() -> None:
     # strip, the image-plate hero row, and four quantitative panels that walk
     # the argument left to right. Row (b) is width-driven: the four square
     # tiles set its height.
-    fig = plt.figure(figsize=(7.16, 5.15))
-    gs = gridspec.GridSpec(3, 24, figure=fig,
-                           height_ratios=[0.54, 1.42, 1.06],
-                           hspace=0.34, wspace=4.0,
-                           left=0.062, right=0.985, top=0.955, bottom=0.080)
+    # Gaps are explicit spacer rows (hspace 0), because a shared hspace sizes
+    # every gap for the busiest one: the (a)-(b) gap needs only the (b) title
+    # line, the (b)-(c) gap must also hold the tile legend and panel titles.
+    fig = plt.figure(figsize=(7.16, 4.92))
+    gs = gridspec.GridSpec(5, 24, figure=fig,
+                           height_ratios=[0.62, 0.185, 1.50, 0.34, 1.24],
+                           hspace=0.0, wspace=4.0,
+                           left=0.062, right=0.985, top=0.955, bottom=0.082)
 
     panel_loop(fig.add_subplot(gs[0, :]))
     fig.text(0.062, gs[0, :].get_position(fig).y1 + 0.012,
              "(a) A trained model now sits inside the measurement chain",
              fontsize=7.5, fontweight="bold")
 
-    panel_a(fig, gs[1, :])
-    fig.text(0.062, gs[1, :].get_position(fig).y1 + 0.010,
+    panel_a(fig, gs[2, :])
+    fig.text(0.062, gs[2, :].get_position(fig).y1 + 0.010,
              "(b) Two failure modes: hallucination the eye can catch "
              "(left), and equal-IoU edge fields it cannot (right)",
              fontsize=7.5, fontweight="bold")
 
-    panel_b(fig.add_subplot(gs[2, 0:6]))
-    panel_c(fig.add_subplot(gs[2, 6:12]))
-    panel_e(fig.add_subplot(gs[2, 12:17]))
-    panel_f(fig.add_subplot(gs[2, 18:24]))  # col 17 left empty: room for the
+    panel_b(fig.add_subplot(gs[4, 0:6]))
+    panel_c(fig.add_subplot(gs[4, 6:12]))
+    panel_e(fig.add_subplot(gs[4, 12:17]))
+    panel_f(fig.add_subplot(gs[4, 18:24]))  # col 17 left empty: room for the
     # policy labels on (f)'s own axis rather than inside (e)
 
     OUT.parent.mkdir(parents=True, exist_ok=True)
