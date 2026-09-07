@@ -563,7 +563,7 @@ def main() -> None:
     fig = plt.figure(figsize=(7.16, 5.15))
     gs = gridspec.GridSpec(3, 24, figure=fig,
                            height_ratios=[0.54, 1.42, 1.06],
-                           hspace=0.46, wspace=4.0,
+                           hspace=0.34, wspace=4.0,
                            left=0.062, right=0.985, top=0.955, bottom=0.080)
 
     panel_loop(fig.add_subplot(gs[0, :]))
