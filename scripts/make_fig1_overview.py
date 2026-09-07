@@ -426,12 +426,12 @@ def panel_loop(ax) -> None:
 
     stages = [
         (2.0, "Layout\n(design intent)", BASE_MID),
-        (21.0, "Litho\n+ SEM image", BASE_MID),
-        (40.0, "Segmentation\nfrontend", RED_STRONG),
-        (59.0, "Metrology\nCD · LWR · LER", BASE_MID),
-        (78.0, "Design decision\nPW · topology", BASE_MID),
+        (22.5, "Litho\n+ SEM image", BASE_MID),
+        (43.0, "Segmentation\nfrontend", RED_STRONG),
+        (63.5, "Metrology\nCD · LWR · LER", BASE_MID),
+        (84.0, "Design decision\nPW · topology", BASE_MID),
     ]
-    w, h, y = 18.0, 10.0, 15.0
+    w, h, y = 14.0, 10.0, 15.0
     for x, label, color in stages:
         learned = color == RED_STRONG
         ax.add_patch(FancyBboxPatch(
@@ -443,17 +443,17 @@ def panel_loop(ax) -> None:
                 fontsize=6.0, color=color if learned else "#303030",
                 fontweight="bold" if learned else "normal", zorder=4)
     for x, _, _ in stages[:-1]:
-        ax.annotate("", xy=(x + w + 0.9, y + h / 2),
-                    xytext=(x + w + 0.1, y + h / 2),
-                    arrowprops=dict(arrowstyle="-|>", lw=0.9, color=NEUTRAL_MID))
+        ax.annotate("", xy=(x + w + 5.8, y + h / 2),
+                    xytext=(x + w + 0.7, y + h / 2),
+                    arrowprops=dict(arrowstyle="->", lw=0.9, color=NEUTRAL_MID))
 
     # what fails, and which panels show it, hangs off the learned stage
-    ax.text(40.0 + w / 2, y + h + 1.2,
+    ax.text(43.0 + w / 2, y + h + 1.2,
             "trained model, no reference at run time",
             ha="center", va="bottom", fontsize=5.8, color=RED_STRONG)
-    ax.text(40.0 - 1.2, y - 2.0, "fails out of window (b–d)",
+    ax.text(43.0 - 1.2, y - 2.0, "fails out of window (b–d)",
             ha="right", va="top", fontsize=5.4, color=NEUTRAL_MID)
-    ax.text(78.0 + w / 2, y - 2.0, "the ordering inverts (e)",
+    ax.text(84.0 + w / 2, y - 2.0, "the ordering inverts (e)",
             ha="center", va="top", fontsize=5.4, color=NEUTRAL_MID)
 
     # the guard, hooked between the frontends and the metrology they feed
@@ -466,11 +466,11 @@ def panel_loop(ax) -> None:
             "runtime guard: cross-frontend disagreement — "
             "flag & reroute, no reference (f)",
             ha="center", va="center", fontsize=5.5, color=TEAL, zorder=4)
-    ax.annotate("", xy=(49.0, gy + gh + 0.2), xytext=(49.0, y - 0.2),
-                arrowprops=dict(arrowstyle="-|>", lw=0.9, color=TEAL,
+    ax.annotate("", xy=(50.0, gy + gh + 0.2), xytext=(50.0, y - 0.2),
+                arrowprops=dict(arrowstyle="->", lw=0.9, color=TEAL,
                                 linestyle=(0, (4, 2)), shrinkA=0, shrinkB=0))
-    ax.annotate("", xy=(68.0, y - 0.2), xytext=(68.0, gy + gh + 0.2),
-                arrowprops=dict(arrowstyle="-|>", lw=0.9, color=TEAL,
+    ax.annotate("", xy=(70.5, y - 0.2), xytext=(70.5, gy + gh + 0.2),
+                arrowprops=dict(arrowstyle="->", lw=0.9, color=TEAL,
                                 linestyle=(0, (4, 2)), shrinkA=0, shrinkB=0))
 
 
