@@ -233,11 +233,22 @@ def zoom_cell(ax, sem: np.ndarray, gt: np.ndarray) -> None:
     # logic: top, the constant offset (moves CD, not LER); bottom, the
     # equal-norm roughening (moves LER, not CD). Both show the same real edge.
     xs = np.linspace(0.0, 1.0, upper.size)
-    halo = [pe.withStroke(linewidth=1.9, foreground="black")]
+    halo = [pe.withStroke(linewidth=1.7, foreground="black")]
     BLUE = "#4F7BF0"
-    base = int(np.median(upper))
+    # both edges, whole line in view (the controlled fields are applied to
+    # both edges, and CD is the distance between them, so the width change
+    # is only visible with both in frame; cf. the Fig. 2(a) framing)
+    lower = np.array([np.where(g[:, x])[0].max() for x in range(x0, x1)],
+                     float)
+    raw2 = rng.normal(0.0, 1.0, lower.size)
+    corr2 = np.convolve(raw2, k / k.sum(), mode="same")
+    corr2 -= corr2.mean()
+    corr2 *= c / np.mean(np.abs(corr2))
+    rough_lo = lower + corr2
+    rlo = int(upper.min() - c) - 5
+    rhi = int(lower.max() + c) + 5
 
-    def strip(y0, y1, rlo, rhi, curves):
+    def strip(y0, y1, curves):
         ax.imshow(s[rlo:rhi + 1, x0:x1], cmap="gray", vmin=0, vmax=255,
                   extent=(0.0, 1.0, y0, y1), aspect="auto",
                   interpolation="nearest", zorder=1)
@@ -249,14 +260,16 @@ def zoom_cell(ax, sem: np.ndarray, gt: np.ndarray) -> None:
                     path_effects=halo)
         return ty
 
-    tyA = strip(0.545, 0.800, base - 8, base + 10,
-                [(upper, CYAN, 1.25), (upper - c, RED_CALLOUT, 1.15)])
-    tyB = strip(0.115, 0.370, base - 12, base + 11,
-                [(upper, CYAN, 1.25), (rough, BLUE, 1.2)])
+    tyA = strip(0.520, 0.800,
+                [(upper, CYAN, 0.95), (lower, CYAN, 0.95),
+                 (upper - c, RED_CALLOUT, 0.9), (lower + c, RED_CALLOUT, 0.9)])
+    tyB = strip(0.115, 0.395,
+                [(upper, CYAN, 0.95), (lower, CYAN, 0.95),
+                 (rough, BLUE, 0.95), (rough_lo, BLUE, 0.95)])
 
     ax.text(0.03, 0.965, "equal-$\\overline{|\\delta|}$ edge fields (controlled)",
             fontsize=6.6, fontweight="bold", va="top")
-    ax.text(0.97, 0.825, f"one edge, zoomed · same IoU "
+    ax.text(0.97, 0.825, f"one line, zoomed · same IoU "
             f"($\\Delta \\leq {d_iou:.3f}$)", fontsize=5.6,
             color=NEUTRAL_MID, ha="right", va="bottom")
     ax.text(0.03, 0.485,
