@@ -1,7 +1,7 @@
 # SpecEdge
 
-Code for **"Trustworthy Deep Segmentation for Lithography SEM Metrology:
-Out-of-Window Qualification and a Reference-Free Runtime Guard."**
+Code for **"Deep Segmentation for Lithography SEM Metrology:
+Qualification by Measurement Error and Reference-Free Runtime Monitoring."**
 
 Lithography metrology reads critical dimension (CD) and edge roughness off contours
 that threshold operators extract from SEM images. At advanced nodes those operators
