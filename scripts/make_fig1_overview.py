@@ -272,6 +272,8 @@ def zoom_cell(ax, sem: np.ndarray, gt: np.ndarray) -> None:
     ax.text(0.97, tyA(upper[-1] - c - 1.2), "offset $+c$", fontsize=5.6,
             color=RED_CALLOUT, ha="right", va="bottom", path_effects=halo,
             zorder=5)
+    ax.text(0.03, tyB(upper[0] + 4.0), "reference", fontsize=5.6, color=CYAN,
+            va="top", path_effects=halo, zorder=5)
     ax.text(0.97, tyB(rough[-1] + 2.0), "rough", fontsize=5.6, color=BLUE,
             ha="right", va="top", path_effects=halo, zorder=5)
 
