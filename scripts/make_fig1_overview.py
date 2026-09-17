@@ -229,41 +229,51 @@ def zoom_cell(ax, sem: np.ndarray, gt: np.ndarray) -> None:
     ax.set_xlim(0, 1)
     ax.set_ylim(0, 1)
     ax.axis("off")
-    # strip occupies the middle of the tile; map (x, row) into axes coords
-    SY0, SY1 = 0.24, 0.80
-    ax.imshow(s[r0:r1 + 1, x0:x1], cmap="gray", vmin=0, vmax=255,
-              extent=(0.0, 1.0, SY0, SY1), aspect="auto",
-              interpolation="nearest", zorder=1)
-    def ty(rows):  # image row -> axes y
-        return SY1 - (np.asarray(rows) - r0) / (r1 - r0) * (SY1 - SY0)
+    # Two stacked strips, one comparison each, so each strip carries a single
+    # logic: top, the constant offset (moves CD, not LER); bottom, the
+    # equal-norm roughening (moves LER, not CD). Both show the same real edge.
     xs = np.linspace(0.0, 1.0, upper.size)
     halo = [pe.withStroke(linewidth=1.9, foreground="black")]
     BLUE = "#4F7BF0"
-    ax.plot(xs, ty(upper), color=CYAN, lw=1.25, zorder=4, path_effects=halo)
-    ax.plot(xs, ty(upper - c), color=RED_CALLOUT, lw=1.15, zorder=4,
-            path_effects=halo)
-    ax.plot(xs, ty(rough), color=BLUE, lw=1.2, zorder=3, path_effects=halo)
+    base = int(np.median(upper))
+
+    def strip(y0, y1, rlo, rhi, curves):
+        ax.imshow(s[rlo:rhi + 1, x0:x1], cmap="gray", vmin=0, vmax=255,
+                  extent=(0.0, 1.0, y0, y1), aspect="auto",
+                  interpolation="nearest", zorder=1)
+        def ty(rows):  # image row -> axes y, clipped to the strip
+            rr = np.clip(np.asarray(rows, float), rlo + 0.5, rhi - 0.5)
+            return y1 - (rr - rlo) / (rhi - rlo) * (y1 - y0)
+        for arr, color, lw in curves:
+            ax.plot(xs, ty(arr), color=color, lw=lw, zorder=4,
+                    path_effects=halo)
+        return ty
+
+    tyA = strip(0.545, 0.800, base - 8, base + 10,
+                [(upper, CYAN, 1.25), (upper - c, RED_CALLOUT, 1.15)])
+    tyB = strip(0.115, 0.370, base - 12, base + 11,
+                [(upper, CYAN, 1.25), (rough, BLUE, 1.2)])
 
     ax.text(0.03, 0.965, "equal-$\\overline{|\\delta|}$ edge fields (controlled)",
             fontsize=6.6, fontweight="bold", va="top")
-    ax.text(0.97, 0.845, f"one edge, zoomed · same IoU "
+    ax.text(0.97, 0.825, f"one edge, zoomed · same IoU "
             f"($\\Delta \\leq {d_iou:.3f}$)", fontsize=5.6,
             color=NEUTRAL_MID, ha="right", va="bottom")
-    ax.text(0.03, 0.175,
+    ax.text(0.03, 0.485,
             f"offset $+c$: CD err {cd_const:.1f} px · LER unchanged",
             fontsize=5.9, color=RED_CALLOUT, va="top")
-    ax.text(0.03, 0.075,
+    ax.text(0.03, 0.045,
             f"rough, same $\\overline{{|\\delta|}}$: CD err {cd_rough:.1f} px · "
             f"LER $+{ler_up:.1f}$ px",
             fontsize=5.9, color=BLUE, va="top")
     # name the curves where they run, so the mapping needs no legend
-    ax.text(0.03, ty(upper[0] + 3.5), "reference", fontsize=5.6, color=CYAN,
+    ax.text(0.03, tyA(upper[0] + 3.0), "reference", fontsize=5.6, color=CYAN,
             va="top", path_effects=halo, zorder=5)
-    ax.text(0.97, ty(upper[-1] - c - 1.5), "offset $+c$", fontsize=5.6,
+    ax.text(0.97, tyA(upper[-1] - c - 1.2), "offset $+c$", fontsize=5.6,
             color=RED_CALLOUT, ha="right", va="bottom", path_effects=halo,
             zorder=5)
-    ax.text(0.30, SY0 + 0.030, "rough", fontsize=5.6, color=BLUE,
-            ha="center", va="bottom", path_effects=halo, zorder=5)
+    ax.text(0.97, tyB(rough[-1] + 2.0), "rough", fontsize=5.6, color=BLUE,
+            ha="right", va="top", path_effects=halo, zorder=5)
 
 
 def panel_b(ax) -> None:
