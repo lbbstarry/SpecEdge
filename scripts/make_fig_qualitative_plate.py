@@ -1,13 +1,16 @@
-"""Qualitative plate: three Extreme samples under all four frontends.
+"""Qualitative plate: two Extreme samples under the routed frontend pair.
 
-Pattern-13 dark image plate (nature-figure skill): rows = samples, columns =
-SEM+reference | U-Net | DeepLabV3+ | HRNet | SegFormer. Consistent crop
-geometry and overlay colors across the grid; per-cell CD error printed on
-the plate, red when above the noise floor tau_sigma = 2.65 px.
+Pattern-13 dark image plate (nature-figure skill), single-column: rows =
+samples, columns = SEM+reference | DeepLabV3+ | SegFormer (the fallback and
+the frontend the guard routes away from). Claim-only overlay grammar shared
+with fig1: cyan = claimed and agreed, red = claimed and spurious; misses are
+sub-percent boundary slivers on both samples and are not painted. Per-cell
+CD error printed on the plate, red when above tau_sigma = 2.65 px.
 
-Row story: #14 and #10 are architecture-specific SegFormer collapses
-(CNNs at <=0.35 px on the same image); #22 is hard for every frontend
-(~3.4 px each) -- the plate shows both failure modes side by side.
+Row story: #14 is an architecture-specific SegFormer collapse (CNNs at
+<=0.35 px on the same image); #22 is read low by every frontend (~3.4 px
+each) because all four claim a border-cut line the reference excludes --
+model at fault above, reference at fault below.
 """
 
 from __future__ import annotations
@@ -35,12 +38,12 @@ ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "paper" / "figures" / "fig_qualitative_plate"
 
 SAMPLES = ["14", "22"]
-MODELS = ["unet", "deeplabv3plus", "hrnet", "segformer"]
-COL_TITLES = ["SEM + reference", "U-Net", "DeepLabV3+", "HRNet", "SegFormer"]
+MODELS = ["deeplabv3plus", "segformer"]
+COL_TITLES = ["SEM + reference", "DeepLabV3+", "SegFormer"]
+VERDICTS = {"14": "model fails", "22": "reference misses"}
 TAU = 2.65
 
 RED_CALLOUT = "#E53935"
-ORANGE = "#E28E2C"
 CYAN = "#22D7E6"
 
 
@@ -84,8 +87,7 @@ def edge_inset(ax, sem, pred, gt, win, label=False) -> None:
     axins = ax.inset_axes([0.55, 0.52, 0.44, 0.44])
     axins.imshow(sem, cmap="gray", vmin=0, vmax=255, interpolation="bilinear")
     if pred is not None:
-        overlays = ((pred & gt, CYAN, 0.32), (pred & ~gt, RED_CALLOUT, 0.5),
-                    (gt & ~pred, ORANGE, 0.5))
+        overlays = ((pred & gt, CYAN, 0.32), (pred & ~gt, RED_CALLOUT, 0.5))
     else:
         overlays = ((gt, CYAN, 0.32),)
     for mask, color, alpha in overlays:
@@ -113,8 +115,7 @@ def cell(ax, sem, pred, gt, note=None, note_red=False) -> None:
     # translucent mask fills: cyan = agreed foreground (the reference mask
     # itself in the reference column), red / orange = the disagreement
     if pred is not None:
-        overlays = ((pred & gt, CYAN, 0.32), (pred & ~gt, RED_CALLOUT, 0.5),
-                    (gt & ~pred, ORANGE, 0.5))
+        overlays = ((pred & gt, CYAN, 0.32), (pred & ~gt, RED_CALLOUT, 0.5))
     else:
         overlays = ((gt, CYAN, 0.32),)
     for mask, color, alpha in overlays:
@@ -133,20 +134,18 @@ def cell(ax, sem, pred, gt, note=None, note_red=False) -> None:
 
 def main() -> None:
     errs: dict[tuple[str, str], float] = {}
-    fgs: dict[str, float] = {}
     for m in MODELS:
         df = pd.read_csv(ROOT / "output/hard_eval" / f"{m}_metrology.csv")
         df["key"] = df["name"].map(norm_name)
         for sid in SAMPLES:
             r = df[df["key"] == sid]
             errs[(m, sid)] = float(r["abs_err_cd_mean"].iloc[0])
-            fgs[sid] = float(r["gt_foreground_ratio"].iloc[0])
 
     # One grid row per sample: the extra unused row left a blank band that
     # bbox_inches="tight" cannot trim, because the legend anchors below it.
-    fig = plt.figure(figsize=(7.16, 2.30))
-    gs = gridspec.GridSpec(len(SAMPLES), 5, figure=fig, hspace=0.05, wspace=0.04,
-                           left=0.055, right=0.995, top=0.905, bottom=0.055)
+    fig = plt.figure(figsize=(3.5, 2.62))
+    gs = gridspec.GridSpec(len(SAMPLES), 3, figure=fig, hspace=0.05, wspace=0.04,
+                           left=0.10, right=0.995, top=0.92, bottom=0.06)
 
     for ri, sid in enumerate(SAMPLES):
         # 512 metrology grid, matching the predictions' native resolution
@@ -163,8 +162,8 @@ def main() -> None:
         ax0 = fig.add_subplot(gs[ri, 0])
         cell(ax0, sem, None, gt)
         edge_inset(ax0, sem, None, gt, win, label=True)
-        ax0.text(-0.06, 0.5, f"#{sid} · fg {fgs[sid]:.2f}",
-                 transform=ax0.transAxes, fontsize=6.5, fontweight="bold",
+        ax0.text(-0.13, 0.5, f"#{sid} · {VERDICTS[sid]}",
+                 transform=ax0.transAxes, fontsize=6.0, fontweight="bold",
                  rotation=90, ha="center", va="center")
         if ri == 0:
             ax0.set_title(COL_TITLES[0], fontsize=7, fontweight="bold", pad=4)
@@ -182,15 +181,13 @@ def main() -> None:
 
     handles = [
         plt.Line2D([], [], marker="s", ls="", mfc=CYAN, mec="none",
-                   ms=5, label=r"agreed foreground (pred $\cap$ ref)"),
+                   ms=5, label=r"claimed foreground, agreed (pred $\cap$ ref)"),
         plt.Line2D([], [], marker="s", ls="", mfc=RED_CALLOUT, mec="none",
-                   ms=5, label=r"spurious (pred $\setminus$ ref)"),
-        plt.Line2D([], [], marker="s", ls="", mfc=ORANGE, mec="none",
-                   ms=5, label=r"missed (ref $\setminus$ pred)"),
+                   ms=5, label=r"claimed, spurious (pred $\setminus$ ref)"),
     ]
-    fig.legend(handles=handles, loc="lower center", ncol=3, fontsize=6,
-               bbox_to_anchor=(0.53, -0.035), handletextpad=0.4,
-               columnspacing=1.2)
+    fig.legend(handles=handles, loc="lower center", ncol=2, fontsize=5.4,
+               bbox_to_anchor=(0.54, -0.03), handletextpad=0.4,
+               columnspacing=0.9)
 
     OUT.parent.mkdir(parents=True, exist_ok=True)
     for ext, kw in (("svg", {}), ("pdf", {"dpi": 600}), ("png", {"dpi": 300})):
