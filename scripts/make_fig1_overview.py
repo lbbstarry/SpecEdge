@@ -153,7 +153,7 @@ def panel_a(fig, gs_hero) -> None:
 
     # the in-distribution IoUs are qualification scores, so say so on the tile
     cells = [
-        (otsu, "Threshold (industry)", "misses the line · IoU 0.14", "#FFB4AE"),
+        (otsu, "Otsu threshold (classical)", "misses the line · IoU 0.14", "#FFB4AE"),
         (segf, "SegFormer · in-dist IoU 0.986", "hallucination · CD err 48.2 px",
          "#FFB4AE"),
         (hrnet, "HRNet · in-dist IoU 0.984", "accurate · CD err 0.07 px",
