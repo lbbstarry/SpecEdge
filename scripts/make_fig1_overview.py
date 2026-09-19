@@ -88,19 +88,25 @@ def load_binary(path: Path, size: int = 1024) -> np.ndarray:
     return np.asarray(img) > 127
 
 
-def edge_inset(ax, sem, pred, gt, win, label=False) -> None:
+def edge_inset(ax, sem, pred, gt, win, label=False, contour_only=False) -> None:
     """Corner magnifier over `win` in the tile's own overlay grammar, marked
     on the parent with a connector box (the Fig. 2 zoom idiom)."""
     r0, r1, c0, c1 = win
     axins = ax.inset_axes([0.56, 0.48, 0.42, 0.42])
     axins.imshow(sem, cmap="gray", vmin=0, vmax=255, interpolation="bilinear")
-    for mask, color, alpha in ((pred & gt, CYAN, 0.32),
-                               (pred & ~gt, RED_CALLOUT, 0.5),
-                               (gt & ~pred, ORANGE, 0.5)):
-        if mask.any():
-            rgba = np.zeros((*mask.shape, 4))
-            rgba[mask] = matplotlib.colors.to_rgba(color, alpha=alpha)
-            axins.imshow(rgba, interpolation="bilinear")
+    if contour_only:
+        csi = axins.contour(pred.astype(float), levels=[0.5], colors="white",
+                            linewidths=0.7)
+        csi.set_path_effects([pe.withStroke(linewidth=1.6,
+                                            foreground="black")])
+    else:
+        for mask, color, alpha in ((pred & gt, CYAN, 0.32),
+                                   (pred & ~gt, RED_CALLOUT, 0.5),
+                                   (gt & ~pred, ORANGE, 0.5)):
+            if mask.any():
+                rgba = np.zeros((*mask.shape, 4))
+                rgba[mask] = matplotlib.colors.to_rgba(color, alpha=alpha)
+                axins.imshow(rgba, interpolation="bilinear")
     axins.set_xlim(c0, c1)
     axins.set_ylim(r1, r0)
     axins.set_xticks([])
@@ -116,18 +122,28 @@ def edge_inset(ax, sem, pred, gt, win, label=False) -> None:
                    ha="right", va="bottom")
 
 
-def plate_cell(ax, sem, pred, gt, label, verdict, verdict_color) -> None:
-    """One hero cell: SEM + overlays + on-plate labels (Pattern 13)."""
+def plate_cell(ax, sem, pred, gt, label, verdict, verdict_color,
+               contour_only=False) -> None:
+    """One hero cell: SEM + overlays + on-plate labels (Pattern 13).
+    contour_only judges the classical route in its own currency: it draws
+    the extracted contour (the method's actual deliverable) instead of
+    mask-diff fills, which are the segmentation world's scoring language."""
     ax.imshow(sem, cmap="gray", vmin=0, vmax=255, interpolation="bilinear")
-    # translucent mask fills, so each colour names a region, not an outline:
-    # agreed foreground in cyan, disagreement on top of it in red / orange
-    for mask, color, alpha in ((pred & gt, CYAN, 0.32),
-                               (pred & ~gt, RED_CALLOUT, 0.5),
-                               (gt & ~pred, ORANGE, 0.5)):
-        if mask.any():
-            rgba = np.zeros((*mask.shape, 4))
-            rgba[mask] = matplotlib.colors.to_rgba(color, alpha=alpha)
-            ax.imshow(rgba, interpolation="bilinear")
+    if contour_only:
+        cs = ax.contour(pred.astype(float), levels=[0.5], colors="white",
+                        linewidths=0.7)
+        cs.set_path_effects([pe.withStroke(linewidth=1.6,
+                                           foreground="black")])
+    else:
+        # translucent mask fills, so each colour names a region, not an
+        # outline: agreed foreground in cyan, disagreement in red / orange
+        for mask, color, alpha in ((pred & gt, CYAN, 0.32),
+                                   (pred & ~gt, RED_CALLOUT, 0.5),
+                                   (gt & ~pred, ORANGE, 0.5)):
+            if mask.any():
+                rgba = np.zeros((*mask.shape, 4))
+                rgba[mask] = matplotlib.colors.to_rgba(color, alpha=alpha)
+                ax.imshow(rgba, interpolation="bilinear")
     ax.set_xticks([])
     ax.set_yticks([])
     for s in ax.spines.values():
@@ -153,11 +169,12 @@ def panel_a(fig, gs_hero) -> None:
 
     # the in-distribution IoUs are qualification scores, so say so on the tile
     cells = [
-        (otsu, "Otsu threshold (classical)", "misses the line · IoU 0.14", "#FFB4AE"),
+        (otsu, "Otsu threshold (classical)", "no usable contour · IoU 0.14",
+         "#FFB4AE", True),
         (segf, "SegFormer · in-dist IoU 0.986", "hallucination · CD err 48.2 px",
-         "#FFB4AE"),
+         "#FFB4AE", False),
         (hrnet, "HRNet · in-dist IoU 0.984", "accurate · CD err 0.07 px",
-         "#A8E6B8"),
+         "#A8E6B8", False),
     ]
     # fixed zoom window on the reference upper edge at the tile centre, the
     # same window for all three tiles so the edge treatment is comparable
@@ -168,10 +185,12 @@ def panel_a(fig, gs_hero) -> None:
     axes = []
     inner = gridspec.GridSpecFromSubplotSpec(1, 4, subplot_spec=gs_hero,
                                              wspace=0.045)
-    for i, (pred, label, verdict, vc) in enumerate(cells):
+    for i, (pred, label, verdict, vc, contour) in enumerate(cells):
         ax = fig.add_subplot(inner[i])
-        plate_cell(ax, sem, pred, gt, label, verdict, vc)
-        edge_inset(ax, sem, pred, gt, win, label=(i == 0))
+        plate_cell(ax, sem, pred, gt, label, verdict, vc,
+                   contour_only=contour)
+        edge_inset(ax, sem, pred, gt, win, label=(i == 0),
+                   contour_only=contour)
         axes.append(ax)
     zoom_cell(fig.add_subplot(inner[3]), sem, gt)
 
