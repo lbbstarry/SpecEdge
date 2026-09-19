@@ -1,7 +1,7 @@
 # SpecEdge
 
-Code for **"Deep Segmentation for Lithography SEM Metrology:
-Qualification by Measurement Error and Reference-Free Runtime Monitoring."**
+Code for **"Measurement-Error Qualification and Reference-Free Runtime
+Monitoring of Deep Segmentation for SEM Metrology."**
 
 Lithography metrology reads critical dimension (CD) and edge roughness off contours
 that threshold operators extract from SEM images. At advanced nodes those operators
@@ -21,9 +21,9 @@ manuscript can be checked against the artifact that produced it:
 python scripts/verify_claims.py
 ```
 
-It holds 72 values as the paper prints them, each paired with an artifact field,
+It holds 91 values as the paper prints them, each paired with an artifact field,
 rounds the artifact value to the printed precision, and exits nonzero on any
-disagreement. Expected output: `72/72 claims verified`.
+disagreement. Expected output: `91/91 claims verified`.
 
 ## What the code establishes
 
