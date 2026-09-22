@@ -1,12 +1,12 @@
-"""Figure 1 (teaser/overview) for the SpecEdge paper -- v2, nature-figure skill.
+"""Overview figure for the SpecEdge paper -- the six-panel argument plate.
 
-Archetype: image plate (hero) + supporting quant row.
-  Hero strip (a), ~55% height, Pattern-13 plate styling: one Extreme sample
+Layout: image plate on top, supporting quantitative row below.
+  Image strip, ~55% height, dark-plate styling: one Extreme sample
   (#9, the 48.2 px worst case) under three frontends, labels on the plate,
   no fake flow arrows -- the three outcome cells are alternatives on the
   same input, not a sequence.
-  Support row: (b) IoU-metrology decoupling, (c) OOD x low-fg collapse,
-  (d) reference-free guard + routing. Quieter than the hero per Pattern 12.
+  Support row: IoU-metrology decoupling, OOD x low-fg collapse,
+  reference-free guard + routing. Kept visually quieter than the image strip.
 
 Palette: one baseline family (#484878/#7884B4/#B4C0E4) for CNN frontends and
 the in-distribution split; red (#B64342/#E53935) reserved for failure
@@ -48,7 +48,7 @@ OUT = ROOT / "paper" / "figures" / "fig1_overview"
 
 SAMPLE = "9"  # Extreme worst case: SegFormer CD err 48.2 px
 
-# --- palette (nature-figure skill) ---
+# --- palette ---
 BASE_DARK = "#484878"   # U-Net
 BASE_MID = "#7884B4"    # DeepLabV3+ / in-dist
 BASE_SOFT = "#B4C0E4"   # HRNet
@@ -73,7 +73,7 @@ MODEL_LABELS = {
     "segformer": "SegFormer",
 }
 MARKERS = {"unet": "o", "deeplabv3plus": "s", "hrnet": "^", "segformer": "D"}
-TEAL = "#42949E"  # guard / routing accent (nature-figure skill accent set)
+TEAL = "#42949E"  # guard / routing accent
 
 
 def norm_name(x: object) -> str:
@@ -116,7 +116,7 @@ def edge_inset(ax, sem, pred, gt, win, label=False) -> None:
 
 
 def plate_cell(ax, sem, pred, gt, label, verdict, verdict_color) -> None:
-    """One hero cell: SEM + overlays + on-plate labels (Pattern 13).
+    """One plate cell: SEM + overlays + on-plate labels.
     Colours paint only what the method CLAIMS: agreed foreground in cyan,
     spurious in red; what it fails to claim stays unpainted, so the
     classical tile's story is the bare sliver that is its entire output."""
@@ -566,8 +566,8 @@ def panel_f(ax) -> None:
 
 
 def main() -> None:
-    # Three-row asymmetric composite (nature-figure skill): a thin system
-    # strip, the image-plate hero row, and four quantitative panels that walk
+    # Three-row asymmetric composite: a thin system
+    # strip, the image-plate row, and four quantitative panels that walk
     # the argument left to right. Row (b) is width-driven: the four square
     # tiles set its height.
     # Gaps are explicit spacer rows (hspace 0), because a shared hspace sizes

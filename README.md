@@ -1,5 +1,7 @@
 # SpecEdge
 
+English | [中文](README_zh.md)
+
 Code for **"Measurement-Error Qualification and Reference-Free Runtime
 Monitoring of Deep Segmentation for SEM Metrology."**
 
@@ -58,6 +60,7 @@ scripts/
   e1*.py e2*.py         the experiments listed above
   verify_claims.py      checks every printed number against its artifact
   make_fig*.py replot_paper_figures.py   paper figures
+  assets/lithoseg/      source tiles for the page-1 figure (cropped from arXiv:2511.12005)
 output/revision_v4/     aggregated results (no images), enough to re-derive every number
 ```
 

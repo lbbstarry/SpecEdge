@@ -1,6 +1,6 @@
 """Figure 2 (framework / measurement principle) for the SpecEdge paper.
 
-Archetype: schematic-led composite (nature-figure skill, Archetype 1).
+Layout: schematic-led composite.
   Top band (~50% height): pipeline schematic with real thumbnails --
     SEM -> frontend box -> predicted mask -> extractor box -> record card,
     plus the reference-free guard branch underneath.

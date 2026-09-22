@@ -1,9 +1,9 @@
 """Page-1 teaser: a directly predicted mask is not measurement-grade.
 
 Three tiles cropped from Fig. 1 (Stage 2 row) of the authors' own LithoSeg
-manuscript (docs/DATE__LithoSeg__final_.pdf, arXiv:2511.12005; embedded
-285-ppi raster extracted with pdfimages, tile frames trimmed; crops stored
-under paper/figures/src_lithoseg/):
+manuscript (arXiv:2511.12005, Fig. 1, stage-2 row; embedded 285-ppi raster
+extracted with pdfimages, tile frames trimmed; crops stored under
+scripts/assets/lithoseg/):
 
   full     -- SAM, box-prompted, on one advanced-node SEM field; blue mask,
               red box marks the zoom window
@@ -37,7 +37,7 @@ plt.rcParams["svg.fonttype"] = "none"
 plt.rcParams["pdf.fonttype"] = 42
 
 ROOT = Path(__file__).resolve().parents[1]
-SRC = ROOT / "paper" / "figures" / "src_lithoseg"
+SRC = ROOT / "scripts" / "assets" / "lithoseg"
 OUT = ROOT / "paper" / "figures" / "fig_teaser"
 
 TILES = [

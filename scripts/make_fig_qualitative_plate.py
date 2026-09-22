@@ -1,6 +1,6 @@
 """Qualitative plate: two Extreme samples under the routed frontend pair.
 
-Pattern-13 dark image plate (nature-figure skill), single-column: rows =
+Dark image plate, single-column: rows =
 samples, columns = SEM+reference | DeepLabV3+ | SegFormer (the fallback and
 the frontend the guard routes away from). Claim-only overlay grammar shared
 with fig1: cyan = claimed and agreed, red = claimed and spurious; misses are

@@ -31,6 +31,5 @@ output/*
 runs/
 *.log
 
-# Generated figures
-paper/figures/*
-!paper/figures/.gitkeep
+# Generated figures (make_fig*.py create paper/figures/ on demand)
+paper/
