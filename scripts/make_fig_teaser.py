@@ -126,7 +126,7 @@ def add_magnifier(ax, window: np.ndarray, center_y: float, draw) -> None:
         ax.add_artist(ConnectionPatch(
             xyA=(x_src, y1), coordsA="data",
             xyB=(x_frac, iy0 + ih), coordsB="axes fraction",
-            axesA=ax, axesB=ax, color="red", lw=0.5, ls=(0, (3, 1.6))))
+            axesA=ax, axesB=ax, color="red", lw=0.5, ls=(0, (4, 3))))
 
 
 def linewidth_arrow(ax, y_top: float, y_bot: float) -> None:
@@ -183,7 +183,7 @@ def main() -> None:
         fig.add_artist(ConnectionPatch(
             xyA=(WIN_X1, y_src), coordsA="data",
             xyB=(0.0, y_frac), coordsB="axes fraction",
-            axesA=ax_field, axesB=ax, color="red", lw=0.6, ls=(0, (3, 1.6))))
+            axesA=ax_field, axesB=ax, color="red", lw=0.6, ls=(0, (4, 3))))
     mask_window = direct[WIN_Y0:WIN_Y1, WIN_X0:WIN_X1]
     ax.imshow(tint(window, mask_window, BLUE, FILL_ALPHA_ZOOM))
     ax.contour(mask_window.astype(float), levels=[0.5],
