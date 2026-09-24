@@ -33,6 +33,7 @@ import matplotlib.patheffects as pe
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib import gridspec
+from matplotlib.patches import ConnectionPatch
 from PIL import Image
 
 plt.rcParams["font.family"] = "serif"
@@ -105,7 +106,7 @@ def add_magnifier(ax, window: np.ndarray, center_y: float, draw) -> None:
     y0 = int(round(center_y - INSET_H / 2))
     y1 = y0 + INSET_H
     ax.add_patch(plt.Rectangle((INSET_X0, y0), INSET_X1 - INSET_X0, INSET_H,
-                               fill=False, ec="white", lw=0.5, ls=(0, (2, 1.2))))
+                               fill=False, ec="red", lw=0.6))
     axi = ax.inset_axes(INSET_RECT)
     axi.imshow(window[y0:y1, INSET_X0:INSET_X1], cmap="gray", vmin=0, vmax=255,
                extent=(INSET_X0 - 0.5, INSET_X1 - 0.5, y1 - 0.5, y0 - 0.5),
@@ -117,9 +118,15 @@ def add_magnifier(ax, window: np.ndarray, center_y: float, draw) -> None:
     axi.set_yticks([])
     for spine in axi.spines.values():
         spine.set_visible(True)
-        spine.set_color("white")
-        spine.set_linewidth(0.6)
-        spine.set_linestyle((0, (2, 1.2)))
+        spine.set_color("red")
+        spine.set_linewidth(0.8)
+    # dashed connectors: source-box bottom corners -> inset top corners
+    ix0, iy0, iw, ih = INSET_RECT
+    for x_src, x_frac in ((INSET_X0, ix0), (INSET_X1, ix0 + iw)):
+        ax.add_artist(ConnectionPatch(
+            xyA=(x_src, y1), coordsA="data",
+            xyB=(x_frac, iy0 + ih), coordsB="axes fraction",
+            axesA=ax, axesB=ax, color="red", lw=0.5, ls=(0, (3, 1.6))))
 
 
 def linewidth_arrow(ax, y_top: float, y_bot: float) -> None:
@@ -157,20 +164,26 @@ def main() -> None:
     top_chain, bot_chain = profile_chains(image, ref)
     xs = np.arange(WIN_X1 - WIN_X0)
 
-    fig = plt.figure(figsize=(3.5, 1.42))
+    fig = plt.figure(figsize=(3.5, 1.64))
     gs = gridspec.GridSpec(1, 3, figure=fig, wspace=0.045,
-                           left=0.005, right=0.995, top=0.845, bottom=0.01)
+                           left=0.005, right=0.995, top=0.866, bottom=0.146)
 
-    ax = fig.add_subplot(gs[0, 0])
-    ax.imshow(tint(image8, direct, BLUE, FILL_ALPHA_FIELD))
-    ax.add_patch(plt.Rectangle((WIN_X0, WIN_Y0), WIN_X1 - WIN_X0,
-                               WIN_Y1 - WIN_Y0, fill=False, ec="red", lw=0.8))
-    ax.set_title("segmentation mask, direct", fontsize=6.5,
-                 fontweight="bold", pad=3)
-    strip_axis(ax)
+    ax_field = fig.add_subplot(gs[0, 0])
+    ax_field.imshow(tint(image8, direct, BLUE, FILL_ALPHA_FIELD))
+    ax_field.add_patch(plt.Rectangle((WIN_X0, WIN_Y0), WIN_X1 - WIN_X0,
+                                     WIN_Y1 - WIN_Y0, fill=False, ec="red", lw=0.8))
+    ax_field.set_title("segmentation mask, direct", fontsize=6.5,
+                       fontweight="bold", pad=3)
+    strip_axis(ax_field)
 
     # middle: the direct mask, smooth and biased inward
     ax = fig.add_subplot(gs[0, 1])
+    # dashed zoom connectors: field box corners -> zoom tile corners
+    for y_src, y_frac in ((WIN_Y0, 1.0), (WIN_Y1, 0.0)):
+        fig.add_artist(ConnectionPatch(
+            xyA=(WIN_X1, y_src), coordsA="data",
+            xyB=(0.0, y_frac), coordsB="axes fraction",
+            axesA=ax_field, axesB=ax, color="red", lw=0.6, ls=(0, (3, 1.6))))
     mask_window = direct[WIN_Y0:WIN_Y1, WIN_X0:WIN_X1]
     ax.imshow(tint(window, mask_window, BLUE, FILL_ALPHA_ZOOM))
     ax.contour(mask_window.astype(float), levels=[0.5],
@@ -206,6 +219,14 @@ def main() -> None:
     ax.set_xlim(-0.5, WIN_X1 - WIN_X0 - 0.5)
     ax.set_ylim(WIN_Y1 - WIN_Y0 - 0.5, -0.5)
     strip_axis(ax)
+    ax_right = ax
+
+    # verdict row under the two zoom tiles
+    for axx, text in ((fig.axes[1], "Smooth but inaccurate\nboundary localization"),
+                      (ax_right, "Accurate boundary localization\nwith preserved roughness")):
+        pos = axx.get_position()
+        fig.text((pos.x0 + pos.x1) / 2, 0.005, text, fontsize=6.0,
+                 ha="center", va="bottom", linespacing=1.25)
 
     OUT.parent.mkdir(parents=True, exist_ok=True)
     for ext, kw in (("svg", {}), ("pdf", {"dpi": 600}), ("png", {"dpi": 300})):
