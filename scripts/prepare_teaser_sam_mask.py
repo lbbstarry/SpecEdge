@@ -25,8 +25,8 @@ from PIL import Image
 from scipy import ndimage
 
 ROOT = Path(__file__).resolve().parents[1]
-IMAGE = ROOT / "dataset" / "SEM" / "ADI_train"
-REF = ROOT / "dataset" / "SEM" / "train_new_gt"
+IMAGE = ROOT / "dataset" / "litho" / "images" / "train"
+REF = ROOT / "dataset" / "litho" / "masks" / "train"
 OUT = ROOT / "output" / "teaser"
 
 SAMPLE = "00000040"
@@ -64,7 +64,7 @@ def main() -> None:
     ap.add_argument("--sample", default=SAMPLE)
     args = ap.parse_args()
 
-    image = np.asarray(Image.open(IMAGE / f"{args.sample}.bmp").convert("RGB"))
+    image = np.asarray(Image.open(IMAGE / f"{args.sample}.png").convert("RGB"))
     ref = np.asarray(Image.open(REF / f"{args.sample}.png").convert("L")) > 127
     side = image.shape[0] - 1
 

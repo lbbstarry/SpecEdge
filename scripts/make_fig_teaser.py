@@ -12,8 +12,8 @@ Three tiles rendered from one SEM field of the study dataset:
              the output of the reference protocol's 1-D profile
              regression (arXiv:2511.12005); the arrow spans edge to edge
 
-Inputs: dataset/SEM/ADI_train/<sample>.bmp (SEM field),
-dataset/SEM/train_new_gt/<sample>.png (reference mask),
+Inputs: dataset/litho/images/train/<sample>.png (SEM field),
+dataset/litho/masks/train/<sample>.png (reference mask),
 output/teaser/sam_direct_<sample>.png (direct mask).
 """
 
@@ -75,9 +75,9 @@ def strip_axis(ax) -> None:
 
 def main() -> None:
     image = np.asarray(Image.open(
-        ROOT / "dataset" / "SEM" / "ADI_train" / f"{SAMPLE}.bmp").convert("L"))
+        ROOT / "dataset" / "litho" / "images" / "train" / f"{SAMPLE}.png").convert("L"))
     ref = np.asarray(Image.open(
-        ROOT / "dataset" / "SEM" / "train_new_gt" / f"{SAMPLE}.png").convert("L")) > 127
+        ROOT / "dataset" / "litho" / "masks" / "train" / f"{SAMPLE}.png").convert("L")) > 127
     direct = np.asarray(Image.open(
         ROOT / "output" / "teaser" / f"sam_direct_{SAMPLE}.png").convert("L")) > 127
 
