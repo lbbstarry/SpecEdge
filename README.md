@@ -2,8 +2,8 @@
 
 English | [中文](README_zh.md)
 
-Code for **"Measurement-Error Qualification and Reference-Free Runtime
-Monitoring of Deep Segmentation for SEM Metrology."**
+Code for **"Measurement-Error Characterization and Consistency Assessment
+of Deep Segmentation for Lithography Metrology."**
 
 Lithography metrology reads critical dimension (CD) and edge roughness off contours
 that threshold operators extract from SEM images. At advanced nodes those operators

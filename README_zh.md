@@ -2,8 +2,8 @@
 
 [English](README.md) | 中文
 
-论文 **《Measurement-Error Qualification and Reference-Free Runtime
-Monitoring of Deep Segmentation for SEM Metrology》** 的代码。
+论文 **《Measurement-Error Characterization and Consistency Assessment
+of Deep Segmentation for Lithography Metrology》** 的代码。
 
 光刻量测从 SEM 图像中用阈值类算子提取轮廓，再从轮廓上读取关键尺寸（CD）与边缘
 粗糙度。在先进制程节点，这类算子已经提取不出可用轮廓，学习式分割是候选的替代
