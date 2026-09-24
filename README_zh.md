@@ -56,7 +56,7 @@ scripts/
   e1*.py e2*.py         上表列出的各实验
   verify_claims.py      将每个印出的数字对回其工件
   make_fig*.py replot_paper_figures.py   论文图
-  assets/lithoseg/      首页图的源瓦片（裁自 arXiv:2511.12005）
+  prepare_teaser_sam_mask.py   首页图所用的直接分割掩膜（需要 SAM 权重）
 output/revision_v4/     聚合结果（无图像），足以重新推出每一个数字
 ```
 
